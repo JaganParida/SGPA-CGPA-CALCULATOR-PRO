@@ -10,22 +10,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.8.0/fonts/remixicon.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-
-    <nav class="navbar">
+    <nav class="navbar" id="main-navbar">
         <div class="nav-content">
             <div class="logo-group">
                 <img src="cutm_text.jpg" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
-                <div class="brand-name">CUTM <span>Calc</span></div>
+                <div class="brand-name">CUTM <span class="brand-accent">Calc</span></div>
             </div>
-            <div class="hamburger" onclick="toggleMenu()">
-                <i class="ri-menu-3-line" id="menu-icon"></i>
-            </div>
+            <div class="hamburger" onclick="toggleMenu()"><i class="ri-menu-line" id="menu-icon"></i></div>
             <ul class="nav-menu" id="nav-menu">
                 <li><a href="#" onclick="switchTab('sgpa'); closeMenu()" class="nav-link active" id="nav-sgpa">SGPA</a>
                 </li>
@@ -36,79 +33,70 @@
     </nav>
 
     <div class="main-wrapper">
-
         <header class="hero-section">
-            <h1 class="main-title">Academic Performance Calculator</h1>
-            <p class="sub-title">Calculate your Semester GPA and Cumulative GPA easily</p>
+            <div class="hero-badge">Academic Year 2025-26</div>
+            <h1 class="main-title">Academic Performance</h1>
+            <p class="sub-title">Calculate your Semester and Cumulative GPA securely right in your browser. Engineered
+                for precision.</p>
 
             <div class="header-actions">
-                <button onclick="openModal()" class="glass-btn">
-                    <span class="btn-content">
-                        View Formulas <i class="ri-function-line"></i>
-                    </span>
-                    <div class="shine"></div>
-                </button>
-
-                <button onclick="openExcelModal()" class="glass-btn secondary-glass">
-                    <span class="btn-content">
-                        Get Excel Format <i class="ri-file-excel-line"></i>
-                    </span>
-                    <div class="shine"></div>
-                </button>
+                <button onclick="openModal()" class="glass-btn"><i class="ri-code-box-line"></i> View Algorithm</button>
+                <button onclick="openExcelModal()" class="glass-btn secondary-glass"><i class="ri-drive-line"></i> Drive
+                    Templates</button>
             </div>
 
-            <div class="grading-table-container fade-in">
+            <div class="grading-table-container material-card">
                 <table class="grading-table">
                     <thead>
                         <tr>
                             <th>Grade</th>
-                            <th>Score</th>
-                            <th>Points</th>
+                            <th>Score Range</th>
+                            <th>Credit Points</th>
                             <th>Interpretation</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><span class="grade-badge">O</span></td>
-                            <td>90-100</td>
-                            <td>10</td>
+                            <td><span class="grade-badge badge-o">O</span></td>
+                            <td>90 - 100</td>
+                            <td class="pts-col">10</td>
                             <td>Outstanding</td>
                         </tr>
                         <tr>
-                            <td><span class="grade-badge">E</span></td>
-                            <td>80-89</td>
-                            <td>9</td>
+                            <td><span class="grade-badge badge-e">E</span></td>
+                            <td>80 - 89</td>
+                            <td class="pts-col">9</td>
                             <td>Excellent</td>
                         </tr>
                         <tr>
-                            <td><span class="grade-badge">A</span></td>
-                            <td>70-79</td>
-                            <td>8</td>
+                            <td><span class="grade-badge badge-a">A</span></td>
+                            <td>70 - 79</td>
+                            <td class="pts-col">8</td>
                             <td>Very Good</td>
                         </tr>
                         <tr>
-                            <td><span class="grade-badge">B</span></td>
-                            <td>60-69</td>
-                            <td>7</td>
+                            <td><span class="grade-badge badge-b">B</span></td>
+                            <td>60 - 69</td>
+                            <td class="pts-col">7</td>
                             <td>Good</td>
                         </tr>
                         <tr>
-                            <td><span class="grade-badge">C</span></td>
-                            <td>50-59</td>
-                            <td>6</td>
+                            <td><span class="grade-badge badge-c">C</span></td>
+                            <td>50 - 59</td>
+                            <td class="pts-col">6</td>
                             <td>Average</td>
                         </tr>
                         <tr>
-                            <td><span class="grade-badge">D</span></td>
-                            <td>40-49</td>
-                            <td>5</td>
+                            <td><span class="grade-badge badge-d">D</span></td>
+                            <td>40 - 49</td>
+                            <td class="pts-col">5</td>
                             <td>Below Average</td>
                         </tr>
                         <tr>
-                            <td><span class="grade-badge">F</span></td>
+                            <td><span class="grade-badge badge-f" style="background:#ff4444; color:#fff;">F</span></td>
                             <td>Below 40</td>
-                            <td>0</td>
-                            <td>Fail</td>
+                            <td class="pts-col fail-pts" style="color:#ff4444;">0</td>
+                            <td class="fail-text" style="color:#ff4444;">Fail</td>
                         </tr>
                     </tbody>
                 </table>
@@ -117,221 +105,219 @@
 
         <div class="tab-wrapper">
             <div class="tab-container">
-                <button class="tab-btn active" onclick="switchTab('sgpa')" id="tab-sgpa">
-                    <i class="ri-article-line"></i> SGPA Tool
-                </button>
-                <button class="tab-btn" onclick="switchTab('cgpa')" id="tab-cgpa">
-                    <i class="ri-calculator-line"></i> CGPA Tool
-                </button>
+                <button class="tab-btn active" onclick="switchTab('sgpa')" id="tab-sgpa"><i
+                        class="ri-file-list-3-line"></i> SGPA Tool</button>
+                <button class="tab-btn" onclick="switchTab('cgpa')" id="tab-cgpa"><i class="ri-pie-chart-line"></i> CGPA
+                    Tool</button>
             </div>
         </div>
 
-        <div id="sgpa-section" class="calculator-card fade-in">
+        <div id="sgpa-section" class="calculator-card material-card">
             <div class="card-header">
                 <div class="icon-box-sm"><i class="ri-file-excel-2-fill"></i></div>
-                <div>
+                <div class="card-header-text">
                     <h2>SGPA Generator</h2>
-                    <p>Upload your semester Excel result to generate an official-style grade sheet.</p>
+                    <p>Process your raw excel results into a formatted grade sheet.</p>
                 </div>
             </div>
 
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>Semester</label>
-                    <div class="select-wrapper">
-                        <select id="semester-number">
-                            <option value="">Select...</option>
-                            <option value="1">Semester 1</option>
-                            <option value="2">Semester 2</option>
-                            <option value="3">Semester 3</option>
-                            <option value="4">Semester 4</option>
-                            <option value="5">Semester 5</option>
-                            <option value="6">Semester 6</option>
-                            <option value="7">Semester 7</option>
-                            <option value="8">Semester 8</option>
-                        </select>
+            <div id="input-container">
+                <div class="input-grid">
+                    <div class="input-group" id="sem-group">
+                        <label>Semester <span id="sem-lock-icon"
+                                style="display:none; color:#25D366; font-size:12px; margin-left:5px;"><i
+                                    class="ri-lock-fill"></i> Locked</span></label>
+                        <div class="select-wrapper">
+                            <select id="semester-number">
+                                <option value="" disabled selected>Select Semester...</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
+                        <span class="error-msg" id="sem-error"></span>
+                    </div>
+                    <div class="input-group" id="reg-group">
+                        <label>Registration Number</label>
+                        <div class="input-with-icon">
+                            <i class="ri-user-line"></i>
+                            <input type="text" id="regno-input" placeholder="e.g. 230301120XXX" />
+                        </div>
+                        <span class="error-msg" id="reg-error"></span>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>Registration No.</label>
-                    <input type="text" id="regno-input" placeholder="e.g. 230301120XXX" />
-                </div>
-            </div>
 
-            <div class="input-group">
-                <label>Result File (Excel)</label>
-                <div class="file-upload-box">
-                    <input type="file" id="excel-file" accept=".xlsx,.xls" />
-                    <div class="file-content">
-                        <div class="upload-icon"><i class="ri-upload-cloud-2-line"></i></div>
-                        <div class="upload-text">
-                            <span id="file-name-display">Click to upload .xlsx file</span>
-                            <span class="sub-text" style="display:block; font-size:0.8rem; color:#666;">Max file size
-                                5MB</span>
+                <div class="input-group" style="margin-bottom:32px;">
+                    <label>Result File (.xlsx) <span id="file-lock-icon"
+                            style="display:none; color:#25D366; font-size:12px; margin-left:5px;"><i
+                                class="ri-lock-fill"></i> Locked</span></label>
+                    <div class="file-upload-box" id="file-box">
+                        <input type="file" id="excel-file" accept=".xlsx,.xls" />
+                        <div class="file-content" id="file-content-ui">
+                            <div class="upload-icon-wrapper"><i class="ri-upload-cloud-2-line"></i></div>
+                            <div class="upload-text-wrapper">
+                                <span id="file-name-display">Drag & drop or click to browse</span>
+                                <span class="sub">Supports official university format</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <button id="calculate-btn" class="primary-btn">Generate Report</button>
             </div>
 
-            <button id="calculate-btn" class="primary-btn">Generate Report</button>
-
             <div id="download-actions" class="download-actions" style="display: none;">
-                <button id="download-btn" class="modern-dl-btn pdf">
-                    <div class="icon-circle"><i class="ri-file-pdf-fill"></i></div>
-                    <span>Download PDF</span>
-                </button>
-                <button id="download-photo-btn" class="modern-dl-btn img">
-                    <div class="icon-circle"><i class="ri-image-2-fill"></i></div>
-                    <span>Download Image</span>
-                </button>
+                <button id="download-btn" class="neon-btn neon-red"><i class="ri-file-pdf-2-line"></i> Export
+                    PDF</button>
+                <button id="download-photo-btn" class="neon-btn neon-blue"><i class="ri-image-download-line"></i> Save
+                    Image</button>
+                <button id="whatsapp-btn" class="neon-btn neon-green"><i class="ri-whatsapp-line"></i> Share</button>
             </div>
         </div>
 
-        <div id="cgpa-section" class="calculator-card fade-in" style="display: none;">
+        <div id="cgpa-section" class="calculator-card material-card" style="display: none;">
             <div class="card-header">
                 <div class="icon-box-sm"><i class="ri-pie-chart-2-fill"></i></div>
-                <div>
+                <div class="card-header-text">
                     <h2>CGPA Calculator</h2>
-                    <p>Enter your SGPA and Total Credits for each semester completed.</p>
+                    <p>Enter your SGPA and Total Credits sequentially.</p>
                 </div>
             </div>
-
             <div class="cgpa-container">
-                <div class="cgpa-labels">
-                    <span>SGPA Score</span>
-                    <span>Total Credits</span>
-                </div>
+                <div class="cgpa-labels"><span>SGPA Score</span><span>Total Credits</span></div>
                 <div id="cgpa-entries">
                     <div class="cgpa-row">
-                        <div class="input-with-icon">
-                            <i class="ri-hashtag"></i>
-                            <input type="number" class="cgpa-sgpa" placeholder="Sem 1 SGPA" step="0.01">
-                        </div>
-                        <div class="input-with-icon">
-                            <i class="ri-coin-line"></i>
-                            <input type="number" class="cgpa-credit" placeholder="Credits" step="0.5">
-                        </div>
-                    </div>
-                    <div class="cgpa-row">
-                        <div class="input-with-icon">
-                            <i class="ri-hashtag"></i>
-                            <input type="number" class="cgpa-sgpa" placeholder="Sem 2 SGPA" step="0.01">
-                        </div>
-                        <div class="input-with-icon">
-                            <i class="ri-coin-line"></i>
-                            <input type="number" class="cgpa-credit" placeholder="Credits" step="0.5">
-                        </div>
+                        <div class="input-with-icon"><i class="ri-hashtag"></i><input type="number" class="cgpa-sgpa"
+                                placeholder="0.00" step="0.01"></div>
+                        <div class="input-with-icon"><i class="ri-coin-line"></i><input type="number"
+                                class="cgpa-credit" placeholder="0.0" step="0.5"></div>
                     </div>
                 </div>
-
+                <span class="error-msg" id="cgpa-error"
+                    style="color:#ff4444; font-size:12px; display:none; margin-bottom:16px; text-align:center;"></span>
                 <div class="cgpa-actions">
-                    <button onclick="addCgpaRow()" class="outline-btn"><i class="ri-add-line"></i> Add Semester</button>
-                    <button onclick="calculateCGPA()" class="primary-btn" style="margin-top:0;">Calculate CGPA</button>
+                    <button onclick="addCgpaRow()" class="outline-btn" style="flex:1;"><i class="ri-add-line"></i> Add
+                        Semester</button>
+                    <button onclick="calculateCGPA()" class="primary-btn" style="flex:2; margin-top:0;">Calculate
+                        CGPA</button>
                 </div>
-
                 <div class="result-display">
-                    <div class="res-label">CUMULATIVE GPA</div>
+                    <div class="res-label">Cumulative Grade Point Average</div>
                     <div id="cgpa-result-value">0.00</div>
                 </div>
             </div>
         </div>
 
-        <div id="report-output" class="report-preview-wrapper"></div>
+        <div id="report-output" class="report-preview-wrapper"
+            style="display: flex; justify-content: center; width: 100%;"></div>
 
         <section id="how-to" class="info-section">
             <div class="section-header">
-                <h2>How to Use CUTM Calculator</h2>
-                <p style="color:#888; margin-top:5px; margin-bottom:25px;">Follow these simple steps.</p>
+                <h2>Workflow</h2>
+                <p>Designed for local execution. No data leaves your device.</p>
             </div>
             <div class="cards-grid">
                 <div class="feature-card">
-                    <div class="card-icon"><i class="ri-upload-2-line"></i></div>
-                    <h3>1. Upload Excel</h3>
-                    <p>Download result from university portal and upload.</p>
+                    <div class="card-icon"><i class="ri-upload-cloud-line"></i></div>
+                    <h3>1. Upload</h3>
+                    <p>Provide your official semester result file securely.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="card-icon"><i class="ri-user-search-line"></i></div>
-                    <h3>2. Enter ID</h3>
-                    <p>Input your Registration Number exactly.</p>
+                    <div class="card-icon"><i class="ri-fingerprint-line"></i></div>
+                    <h3>2. Authenticate</h3>
+                    <p>Enter your unique Registration Number to fetch data.</p>
                 </div>
                 <div class="feature-card">
                     <div class="card-icon"><i class="ri-cpu-line"></i></div>
                     <h3>3. Process</h3>
-                    <p>Click generate to extract grades & credits.</p>
+                    <p>Algorithms instantly compute credit points and GPA.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="card-icon"><i class="ri-download-cloud-line"></i></div>
-                    <h3>4. Download</h3>
-                    <p>Save as PDF or Image for your records.</p>
+                    <div class="card-icon"><i class="ri-share-forward-box-line"></i></div>
+                    <h3>4. Export</h3>
+                    <p>Download a high-res PDF, Image, or share directly.</p>
                 </div>
             </div>
         </section>
 
         <footer class="main-footer">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="https://github.com/JaganParida" target="_blank"><i class="ri-github-fill"></i> GitHub</a>
-                    <a href="https://www.linkedin.com/in/jagan-parida04" target="_blank"><i
-                            class="ri-linkedin-fill"></i> LinkedIn</a>
-                </div>
-                <p class="copyright">&copy; 2026 Academic Tools Suite. Built with <i class="ri-heart-fill"
-                        style="color:#dc2626"></i> by Jagan Parida.</p>
+            <div class="footer-links">
+                <a href="https://github.com/JaganParida" target="_blank"><i class="ri-github-fill"></i> GitHub</a>
+                <a href="https://www.linkedin.com/in/jagan-parida04" target="_blank"><i class="ri-linkedin-fill"></i>
+                    LinkedIn</a>
             </div>
+            <p class="copyright">Designed & Developed by <strong style="color: #fff;">Jagan Parida</strong></p>
+            <p class="copyright" style="font-size: 11px; margin-top: 5px;">&copy; 2026 Academic Tools Suite.</p>
         </footer>
-
     </div>
 
     <div id="formula-modal" class="modal-overlay">
-        <div class="modal-content">
+        <div class="modal-content material-card popup-glass">
             <button class="close-modal" onclick="closeModal()"><i class="ri-close-line"></i></button>
-            <h2 class="modal-title">Calculation Formulas</h2>
-            <div class="modal-body">
+            <div class="popup-icon-alert" style="color: #a855f7;"><i class="ri-functions"></i></div>
+            <h3>Core Algorithms</h3>
+            <p class="popup-desc">The mathematical logic behind the calculations.</p>
+            <div class="formula-list">
                 <div class="formula-item">
-                    <h3>Credit Point</h3>
+                    <div class="f-lbl">Credit Point (CI)</div>
                     <code>CREDIT × GRADE POINT</code>
                 </div>
                 <div class="formula-item">
-                    <h3>Credit Index (CI)</h3>
-                    <code>Σ(CREDIT POINT) of all courses</code>
+                    <div class="f-lbl">Semester GPA (SGPA)</div>
+                    <code>Σ CI / Σ CREDITS</code>
                 </div>
                 <div class="formula-item">
-                    <h3>SGPA</h3>
-                    <code>CI / ΣCREDITS (for a semester)</code>
+                    <div class="f-lbl">Cumulative GPA (CGPA)</div>
+                    <code>[Σ CI of all sem] / [Σ CREDITS]</code>
                 </div>
-                <div class="formula-item">
-                    <h3>CGPA</h3>
-                    <code>[ΣCI of all prev semesters] / [ΣCREDITS of all semesters]</code>
-                </div>
-            </div>
-            <div style="text-align:center; margin-top:20px;">
-                <button onclick="closeModal()" class="outline-btn" style="width:auto; padding:8px 30px;">Close</button>
             </div>
         </div>
     </div>
 
     <div id="excel-modal" class="modal-overlay">
-        <div class="modal-content drive-modal">
+        <div class="modal-content material-card popup-glass text-center">
             <button class="close-modal" onclick="closeExcelModal()"><i class="ri-close-line"></i></button>
-            <div class="modal-icon-header">
-                <i class="ri-folder-download-fill"></i>
-            </div>
-            <h2 class="modal-title">Download Excel of Semester Results</h2>
-            <p style="text-align:center; color:#aaa; margin-bottom:25px;">Access the required excel files from the
-                official Drive below.</p>
-
+            <div class="popup-icon-alert" style="color: #3b82f6;"><i class="ri-drive-fill"></i></div>
+            <h3>Official Templates</h3>
+            <p class="popup-desc">Access the verified semester excel format templates securely.</p>
             <a href="https://drive.google.com/drive/folders/1qTvjHTLj2-1rtELg4USURvPMtAh3vW4F?usp=sharing"
-                target="_blank" class="drive-btn">
-                <div class="drive-icon"><i class="ri-google-drive-fill"></i></div>
-                <div class="drive-text">
-                    <span>Open Drive Folder</span>
-                    <small>View & Download Excel Files</small>
-                </div>
-                <i class="ri-external-link-line arrow"></i>
-            </a>
+                target="_blank" class="primary-btn drive-link">Access Drive <i class="ri-external-link-line"></i></a>
+        </div>
+    </div>
 
-            <div style="text-align:center; margin-top:20px;">
-                <button onclick="closeExcelModal()" class="outline-btn"
-                    style="width:auto; padding:8px 30px;">Close</button>
+    <div id="custom-alert" class="modal-overlay">
+        <div class="modal-content material-card popup-glass text-center">
+            <div class="popup-icon-alert" style="color: #ef4444;"><i class="ri-error-warning-fill"></i></div>
+            <h3 id="alert-title">System Notice</h3>
+            <p id="alert-msg" class="popup-desc"></p>
+            <button class="primary-btn" onclick="closeCustomAlert()" style="margin-top: 20px;">Acknowledge</button>
+        </div>
+    </div>
+
+    <div id="custom-prompt" class="modal-overlay">
+        <div class="modal-content material-card popup-glass">
+            <button class="close-modal" onclick="closeCustomPrompt()"><i class="ri-close-line"></i></button>
+            <div class="popup-icon-alert" style="color: #25D366;"><i class="ri-whatsapp-line"></i></div>
+            <h3 class="text-center">Secure Share</h3>
+            <p class="popup-desc text-center">Enter recipient's WhatsApp number (include country code, no '+').</p>
+            <div class="input-with-icon" style="margin-top: 20px;">
+                <i class="ri-phone-line"></i>
+                <input type="number" id="prompt-input" placeholder="e.g. 919876543210" />
+            </div>
+            <div class="privacy-disclaimer">
+                <i class="ri-shield-check-line"></i> <span>Privacy Note: This site does not store your or your parents'
+                    numbers.</span>
+            </div>
+            <div style="display:flex; gap:16px; margin-top:24px;">
+                <button class="outline-btn" onclick="closeCustomPrompt()" style="flex:1;">Cancel</button>
+                <button id="wa-send-btn" class="primary-btn disabled-btn" disabled
+                    style="flex:1; margin-top:0; background: #1f1f1f; color: #555;">Send <i
+                        class="ri-send-plane-fill"></i></button>
             </div>
         </div>
     </div>
