@@ -41,6 +41,47 @@ document.addEventListener(
   { passive: false },
 );
 
+/* ================= CONFETTI LOGIC ================= */
+function fireConfetti() {
+  // Dynamically load the canvas-confetti library if it doesn't exist
+  if (!window.confetti) {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
+    script.onload = () => doConfettiBlast();
+    document.head.appendChild(script);
+  } else {
+    doConfettiBlast();
+  }
+}
+
+function doConfettiBlast() {
+  const duration = 3 * 1000;
+  const end = Date.now() + duration;
+
+  (function frame() {
+    // Blast from left edge
+    confetti({
+      particleCount: 5,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0, y: 1 },
+      colors: ['#407BFF', '#22c55e', '#ffcf40', '#ef4444', '#a855f7']
+    });
+    // Blast from right edge
+    confetti({
+      particleCount: 5,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1, y: 1 },
+      colors: ['#407BFF', '#22c55e', '#ffcf40', '#ef4444', '#a855f7']
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  }());
+}
+
 /* ================= NAVBAR SCROLL ================= */
 window.addEventListener("scroll", () => {
   const nav = document.getElementById("main-navbar");
@@ -93,12 +134,10 @@ function applySheetZoom() {
   const container = document.getElementById("grade-sheet-target");
   if (!sheet || !container) return;
 
-  // Grab the natural height before it gets manipulated by scale
   const rawHeight = sheet.offsetHeight;
 
   sheet.style.transform = `scale(${currentZoomLevel})`;
-
-  // Explicitly resize the wrapper so it doesn't leave ghost gaps
+  
   container.style.width = `${794 * currentZoomLevel}px`;
   container.style.height = `${rawHeight * currentZoomLevel}px`;
 
@@ -115,13 +154,11 @@ function changeZoom(step) {
   applySheetZoom();
 }
 
-// Auto scale down for mobile devices on initial render
 function fitToScreen() {
   const wrapper = document.getElementById("report-scroll-wrapper");
   if (!wrapper) return;
-  const availableWidth = wrapper.clientWidth - 40; // 40px padding buffer
-
-  // Calculate if mobile screen is smaller than A4
+  const availableWidth = wrapper.clientWidth - 40; 
+  
   if (availableWidth > 0 && availableWidth < 794) {
     currentZoomLevel = availableWidth / 794;
   } else {
@@ -132,7 +169,6 @@ function fitToScreen() {
 
 window.addEventListener("resize", fitToScreen);
 
-// Drag to pan map logic
 function initDragToScroll() {
   const slider = document.getElementById("report-scroll-wrapper");
   if (!slider) return;
@@ -350,8 +386,47 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
     minute: "2-digit",
   });
 
-  // Inject properly centered scroll wrapper AND new zoom UI directly below
+  // Decide what banner to show
+  let bannerHTML = "";
+  let isOutstanding = parseFloat(sgpa) > 9.0;
+  
+  if (isOutstanding) {
+      bannerHTML = `
+        <div class="report-status-banner status-outstanding">
+            <div class="banner-icon"><i class="ri-medal-fill"></i></div>
+            <div class="banner-content">
+                <h4>Outstanding Performance!</h4>
+                <p>Incredible job! You achieved a stellar SGPA of ${sgpa}. Keep up the excellent work!</p>
+            </div>
+        </div>
+      `;
+  } else if (actualBacklogs.length > 0) {
+      bannerHTML = `
+        <div class="report-status-banner status-warning">
+            <div class="banner-icon"><i class="ri-error-warning-fill"></i></div>
+            <div class="banner-content">
+                <h4>Attention Required</h4>
+                <p>You have active backlogs in this semester. Review the detailed subjects below.</p>
+            </div>
+        </div>
+      `;
+  } else {
+      bannerHTML = `
+        <div class="report-status-banner status-normal">
+            <div class="banner-icon"><i class="ri-checkbox-circle-fill"></i></div>
+            <div class="banner-content">
+                <h4>Report Generated</h4>
+                <p>All clear! Your semester results have been successfully processed.</p>
+            </div>
+        </div>
+      `;
+  }
+
+  // Inject Banner, Centered scroll wrapper, and zoom UI
+  // Note: CGPA removed from summary row
   reportDiv.innerHTML = `
+        ${bannerHTML}
+        
         <div id="report-scroll-wrapper" class="report-scroll-wrapper">
             <div id="grade-sheet-target" class="grade-sheet-target">
                 <div id="grade-sheet" class="grade-sheet">
@@ -381,7 +456,6 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
                         <div>Total Credits : ${totalCredits}</div>
                         <div>Credits Cleared : ${creditsCleared}</div>
                         <div>SGPA : ${sgpa}</div>
-                        <div>CGPA : N/A</div>
                     </div>
                     <div class="signature-row">
                         <div>Date : ${dateString}</div>
@@ -432,6 +506,11 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
     fitToScreen();
     initDragToScroll();
     reportDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+    
+    // FIRE PARTY BLAST IF SGPA > 9
+    if (isOutstanding) {
+        fireConfetti();
+    }
   }, 50);
 });
 
