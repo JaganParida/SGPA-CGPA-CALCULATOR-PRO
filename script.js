@@ -15,8 +15,7 @@ let currentReportData = null;
 let isReportGenerated = false;
 
 // Keep your Google Apps Script URL
-const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwNjwC0SNrXPd5IcsjwkCvy_gJEUbPf5gVkEbIgzDWLDv1q1M2-lJkEVDd9bZmHGR3daA/exec";
+const GOOGLE_SCRIPT_URL = ENV.GOOGLE_SCRIPT_URL;
 
 /* ================= NAVBAR SCROLL ================= */
 window.addEventListener("scroll", () => {
@@ -319,7 +318,7 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
   isReportGenerated = true;
 
   // GOOGLE SHEETS LOGGING
-  if (GOOGLE_SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+  if (GOOGLE_SCRIPT_URL !== ENV.GOOGLE_SCRIPT_URL) {
     const formData = new FormData();
     formData.append("date", dateString);
     formData.append("time", timeString);
@@ -361,7 +360,7 @@ document.getElementById("whatsapp-btn").addEventListener("click", () => {
     if (d.backlogs.length > 0)
       text += `\n[!] Backlogs Note: ${d.backlogs.join(", ")}\n\n`;
     else text += `\n[*] All clear! Excellent performance!\n\n`;
-    text += `Please click the link below for detailed subject-wise grades.\nhttps://cutm-calc.web.app`;
+    text += `Please click the link below for detailed subject-wise grades.\nhttps://cutm-sgpa-cgpa-calculator-pro.vercel.app`;
     window.open(
       `https://wa.me/${num}?text=${encodeURIComponent(text)}`,
       "_blank",
