@@ -20,7 +20,7 @@ let currentZoomLevel = 1.0;
 const GOOGLE_SCRIPT_URL =
   typeof ENV !== "undefined" ? ENV.GOOGLE_SCRIPT_URL : "";
 
-/* ================= PREVENT BROWSER ZOOM (KEYBOARD & MOUSE) ================= */
+/* PREVENT BROWSER ZOOM (KEYBOARD & MOUSE)  */
 document.addEventListener(
   "wheel",
   function (e) {
@@ -42,7 +42,7 @@ document.addEventListener(
   { passive: false },
 );
 
-/* ================= CONFETTI LOGIC ================= */
+/* CONFETTI LOGIC */
 function fireConfetti() {
   if (!window.confetti) {
     const script = document.createElement("script");
@@ -83,14 +83,14 @@ function doConfettiBlast() {
   })();
 }
 
-/* ================= NAVBAR SCROLL ================= */
+/* NAVBAR SCROLL */
 window.addEventListener("scroll", () => {
   const nav = document.getElementById("main-navbar");
   if (window.scrollY > 20) nav.classList.add("scrolled");
   else nav.classList.remove("scrolled");
 });
 
-/* ================= RESET UI ON PAGE LOAD ================= */
+/* RESET UI ON PAGE LOAD */
 function resetUI() {
   const semSelect = document.getElementById("semester-number");
   semSelect.value = "";
@@ -129,7 +129,7 @@ function resetUI() {
 
 window.addEventListener("load", resetUI);
 
-/* ================= CUSTOM ZOOM & PAN LOGIC ================= */
+/*  CUSTOM ZOOM & PAN LOGIC  */
 function applySheetZoom() {
   const sheet = document.getElementById("grade-sheet");
   const container = document.getElementById("grade-sheet-target");
@@ -205,7 +205,7 @@ function initDragToScroll() {
   });
 }
 
-/* ================= POPUPS & MENUS ================= */
+/*  POPUPS & MENUS  */
 function customAlert(msg) {
   document.getElementById("alert-msg").innerText = msg;
   document.getElementById("custom-alert").classList.add("open");
@@ -240,7 +240,7 @@ function closeMenu() {
     .classList.replace("ri-close-line", "ri-menu-line");
 }
 
-/* ================= UPDATED SWITCH TAB FUNCTION ================= */
+/*  UPDATED SWITCH TAB FUNCTION  */
 function switchTab(tabId) {
   // 1. Hide both sections and reset tab buttons
   document.getElementById("sgpa-section").style.display = "none";
@@ -268,7 +268,7 @@ function switchTab(tabId) {
   }
 }
 
-/* ================= EXCEL PARSING ================= */
+/*  EXCEL PARSING  */
 document.getElementById("excel-file").addEventListener("change", function (e) {
   const fileName = e.target.files[0]
     ? e.target.files[0].name
@@ -310,7 +310,7 @@ document.getElementById("regno-input").addEventListener("input", function (e) {
   }
 });
 
-/* ================= GENERATE REPORT ================= */
+/*  GENERATE REPORT  */
 document.getElementById("calculate-btn").addEventListener("click", function () {
   const errElements = document.querySelectorAll(".error-msg");
   errElements.forEach((el) => (el.style.display = "none"));
@@ -523,11 +523,13 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
   isReportGenerated = true;
 
   if (GOOGLE_SCRIPT_URL) {
-    const formData = new FormData();
+    // We use URLSearchParams so Google Script can read it easily
+    const formData = new URLSearchParams();
     formData.append("date", dateString);
     formData.append("time", timeString);
     formData.append("regNo", regNo);
     formData.append("name", studentName);
+
     fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
@@ -545,7 +547,7 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
   }, 50);
 });
 
-/* ================= WHATSAPP SHARE ================= */
+/*  WHATSAPP SHARE  */
 let promptCallback = null;
 const waInput = document.getElementById("prompt-input");
 const waSendBtn = document.getElementById("wa-send-btn");
@@ -602,7 +604,7 @@ waSendBtn.addEventListener("click", () => {
   }
 });
 
-/* ================= CGPA CALCULATOR ================= */
+/*  CGPA CALCULATOR  */
 function addCgpaRow() {
   const div = document.createElement("div");
   div.className = "cgpa-row";
@@ -660,7 +662,7 @@ function parseCredit(val) {
     .reduce((a, c) => a + parseFloat(c || 0), 0);
 }
 
-/* ================= PERFECT PDF/IMAGE EXPORTS ================= */
+/*  PERFECT PDF/IMAGE EXPORTS  */
 document.getElementById("download-btn").addEventListener("click", () => {
   const sheet = document.getElementById("grade-sheet");
   sheet.style.transform = "none";
