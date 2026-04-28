@@ -16,11 +16,10 @@ let currentReportData = null;
 let isReportGenerated = false;
 let currentZoomLevel = 1.0;
 
-// Safely check if ENV is defined
 const GOOGLE_SCRIPT_URL =
   typeof ENV !== "undefined" ? ENV.GOOGLE_SCRIPT_URL : "";
 
-/* PREVENT BROWSER ZOOM (KEYBOARD & MOUSE)  */
+/* PREVENT BROWSER ZOOM */
 document.addEventListener(
   "wheel",
   function (e) {
@@ -58,7 +57,6 @@ function fireConfetti() {
 function doConfettiBlast() {
   const duration = 3 * 1000;
   const end = Date.now() + duration;
-
   (function frame() {
     confetti({
       particleCount: 6,
@@ -76,10 +74,7 @@ function doConfettiBlast() {
       colors: ["#407BFF", "#22c55e", "#ffcf40", "#ef4444", "#a855f7"],
       startVelocity: 45,
     });
-
-    if (Date.now() < end) {
-      requestAnimationFrame(frame);
-    }
+    if (Date.now() < end) requestAnimationFrame(frame);
   })();
 }
 
@@ -90,62 +85,117 @@ window.addEventListener("scroll", () => {
   else nav.classList.remove("scrolled");
 });
 
+/* ========================================================
+   CLOSE CONFIRM LOGIC (Forced Visibility Bypass)
+======================================================== */
+window.requestCloseInternalModal = function () {
+  const confirmModal = document.getElementById("custom-confirm-modal");
+  if (confirmModal) {
+    confirmModal.style.display = "flex";
+    confirmModal.style.opacity = "1";
+    confirmModal.style.visibility = "visible";
+    confirmModal.style.pointerEvents = "auto";
+    confirmModal.classList.add("open"); // Ensures CSS animations work if present
+  }
+};
+
+window.cancelCloseModal = function () {
+  const confirmModal = document.getElementById("custom-confirm-modal");
+  if (confirmModal) {
+    confirmModal.style.display = "none";
+    confirmModal.style.opacity = "0";
+    confirmModal.style.visibility = "hidden";
+    confirmModal.classList.remove("open");
+  }
+};
+
+window.executeCloseInternalModal = function () {
+  const confirmModal = document.getElementById("custom-confirm-modal");
+  const resultModal = document.getElementById("internal-result-modal");
+  if (confirmModal) {
+    confirmModal.style.display = "none";
+    confirmModal.classList.remove("open");
+  }
+  if (resultModal) resultModal.style.display = "none";
+  document.body.style.overflow = "";
+};
+
 /* RESET UI ON PAGE LOAD */
 function resetUI() {
+  document.body.style.overflow = "";
   const semSelect = document.getElementById("semester-number");
-  semSelect.value = "";
-  semSelect.disabled = false;
-  document.getElementById("sem-lock-icon").style.display = "none";
+  if (semSelect) {
+    semSelect.value = "";
+    semSelect.disabled = false;
+  }
+  const semLockIcon = document.getElementById("sem-lock-icon");
+  if (semLockIcon) semLockIcon.style.display = "none";
 
-  document.getElementById("regno-input").value = "";
+  const regNoInput = document.getElementById("regno-input");
+  if (regNoInput) regNoInput.value = "";
 
   const fileInput = document.getElementById("excel-file");
-  fileInput.value = "";
-  fileInput.disabled = false;
-  document.getElementById("file-name-display").innerText =
-    "Drag & drop or click to browse";
-  document.getElementById("file-name-display").style.color = "";
-  document.getElementById("file-content-ui").classList.remove("locked-ui");
-  document.getElementById("file-lock-icon").style.display = "none";
+  if (fileInput) {
+    fileInput.value = "";
+    fileInput.disabled = false;
+  }
+  const fileNameDisplay = document.getElementById("file-name-display");
+  if (fileNameDisplay) {
+    fileNameDisplay.innerText = "Drag & drop or click to browse";
+    fileNameDisplay.style.color = "";
+  }
+
+  const fileContentUI = document.getElementById("file-content-ui");
+  if (fileContentUI) fileContentUI.classList.remove("locked-ui");
+  const fileLockIcon = document.getElementById("file-lock-icon");
+  if (fileLockIcon) fileLockIcon.style.display = "none";
+
+  const internalFileInput = document.getElementById("excel-file-internal");
+  if (internalFileInput) {
+    internalFileInput.value = "";
+    document.getElementById("file-name-display-internal").innerText =
+      "Drag & drop or click to browse";
+  }
+  const regNoInternal = document.getElementById("regno-input-internal");
+  if (regNoInternal) regNoInternal.value = "";
+
+  document.getElementById("internal-result-modal").style.display = "none";
+  document.getElementById("custom-confirm-modal").style.display = "none";
 
   workbookData = [];
+  const reportOutput = document.getElementById("report-output");
+  if (reportOutput) reportOutput.innerHTML = "";
 
-  document.getElementById("report-output").innerHTML = "";
-  document.getElementById("download-actions").style.display = "none";
+  const downloadActions = document.getElementById("download-actions");
+  if (downloadActions) downloadActions.style.display = "none";
 
   const calcBtn = document.getElementById("calculate-btn");
-  calcBtn.disabled = false;
-  calcBtn.innerHTML = "Generate Report";
-  calcBtn.style.cursor = "pointer";
+  if (calcBtn) {
+    calcBtn.disabled = false;
+    calcBtn.innerHTML = "Generate Report";
+    calcBtn.style.cursor = "pointer";
+  }
 
   isReportGenerated = false;
   currentReportData = null;
   currentZoomLevel = 1.0;
-
   document
     .querySelectorAll(".error-msg")
     .forEach((el) => (el.style.display = "none"));
 }
-
 window.addEventListener("load", resetUI);
 
-/*  CUSTOM ZOOM & PAN LOGIC  */
+/* CUSTOM ZOOM & PAN LOGIC */
 function applySheetZoom() {
   const sheet = document.getElementById("grade-sheet");
   const container = document.getElementById("grade-sheet-target");
   if (!sheet || !container) return;
-
   const rawHeight = sheet.offsetHeight;
-
   sheet.style.transform = `scale(${currentZoomLevel})`;
-
   container.style.width = `${794 * currentZoomLevel}px`;
   container.style.height = `${rawHeight * currentZoomLevel}px`;
-
   const zoomLabel = document.getElementById("zoom-level-label");
-  if (zoomLabel) {
-    zoomLabel.innerText = Math.round(currentZoomLevel * 100) + "%";
-  }
+  if (zoomLabel) zoomLabel.innerText = Math.round(currentZoomLevel * 100) + "%";
 }
 
 function changeZoom(step) {
@@ -159,21 +209,16 @@ function fitToScreen() {
   const wrapper = document.getElementById("report-scroll-wrapper");
   if (!wrapper) return;
   const availableWidth = wrapper.clientWidth - 40;
-
-  if (availableWidth > 0 && availableWidth < 794) {
+  if (availableWidth > 0 && availableWidth < 794)
     currentZoomLevel = availableWidth / 794;
-  } else {
-    currentZoomLevel = 1.0;
-  }
+  else currentZoomLevel = 1.0;
   applySheetZoom();
 }
-
 window.addEventListener("resize", fitToScreen);
 
 function initDragToScroll() {
   const slider = document.getElementById("report-scroll-wrapper");
   if (!slider) return;
-
   let isDown = false;
   let startX, startY, scrollLeft, scrollTop;
 
@@ -205,7 +250,7 @@ function initDragToScroll() {
   });
 }
 
-/*  POPUPS & MENUS  */
+/* POPUPS & MENUS */
 function customAlert(msg) {
   document.getElementById("alert-msg").innerText = msg;
   document.getElementById("custom-alert").classList.add("open");
@@ -240,35 +285,41 @@ function closeMenu() {
     .classList.replace("ri-close-line", "ri-menu-line");
 }
 
-/*  UPDATED SWITCH TAB FUNCTION  */
+/* SWITCH TAB FUNCTION */
 function switchTab(tabId) {
-  // 1. Hide both sections and reset tab buttons
-  document.getElementById("sgpa-section").style.display = "none";
-  document.getElementById("cgpa-section").style.display = "none";
-  document.getElementById("tab-sgpa").classList.remove("active");
-  document.getElementById("tab-cgpa").classList.remove("active");
+  const sections = ["sgpa-section", "cgpa-section", "internal-section"];
+  sections.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
 
-  // 2. Show the targeted section and activate its button
-  document.getElementById(tabId + "-section").style.display = "block";
-  document.getElementById("tab-" + tabId).classList.add("active");
+  const tabs = ["tab-sgpa", "tab-cgpa", "tab-internal"];
+  tabs.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("active");
+  });
 
-  // 3. Sync the Active class for the Navbar links
-  const navSgpa = document.getElementById("nav-sgpa");
-  const navCgpa = document.getElementById("nav-cgpa");
-  if (navSgpa) navSgpa.classList.remove("active");
-  if (navCgpa) navCgpa.classList.remove("active");
+  const targetSection = document.getElementById(tabId + "-section");
+  if (targetSection) targetSection.style.display = "block";
+
+  const targetTab = document.getElementById("tab-" + tabId);
+  if (targetTab) targetTab.classList.add("active");
+
+  const navLinks = ["nav-sgpa", "nav-cgpa", "nav-internal"];
+  navLinks.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("active");
+  });
 
   const activeNavLink = document.getElementById("nav-" + tabId);
   if (activeNavLink) activeNavLink.classList.add("active");
 
-  // 4. Smooth scroll to the Tab section
   const tabWrapper = document.querySelector(".tab-wrapper");
-  if (tabWrapper) {
+  if (tabWrapper)
     tabWrapper.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
 }
 
-/*  EXCEL PARSING  */
+/* EXCEL PARSING (SGPA) */
 document.getElementById("excel-file").addEventListener("change", function (e) {
   const fileName = e.target.files[0]
     ? e.target.files[0].name
@@ -281,7 +332,6 @@ document.getElementById("excel-file").addEventListener("change", function (e) {
         const data = new Uint8Array(evt.target.result);
         const wb = XLSX.read(data, { type: "array" });
         const sheet = wb.Sheets[wb.SheetNames[0]];
-
         const rawData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
         workbookData = rawData.map((row) => {
           let newRow = {};
@@ -291,7 +341,6 @@ document.getElementById("excel-file").addEventListener("change", function (e) {
           return newRow;
         });
       } catch (error) {
-        console.error("Excel Parsing Error: ", error);
         customAlert(
           "Failed to read the Excel file. Please ensure it's a valid .xlsx file.",
         );
@@ -310,7 +359,7 @@ document.getElementById("regno-input").addEventListener("input", function (e) {
   }
 });
 
-/*  GENERATE REPORT  */
+/* GENERATE REPORT (SGPA) */
 document.getElementById("calculate-btn").addEventListener("click", function () {
   const errElements = document.querySelectorAll(".error-msg");
   errElements.forEach((el) => (el.style.display = "none"));
@@ -350,7 +399,6 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
   let totalWeightedPoints = 0,
     totalCredits = 0,
     creditsCleared = 0;
-
   const studentName = studentRows[0]["Name"] || "Unknown Student";
   let batch = regNo.length >= 2 ? "20" + regNo.substring(0, 2) : "N/A";
 
@@ -365,28 +413,16 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
       const type = row["Type"] || "PP";
 
       subjectsArray.push({ name: subject, grade: grade });
-
       let points =
         validGradePoints[grade] !== undefined ? validGradePoints[grade] : 0;
 
-      // Logic: Total credits strictly sums all displayed credits regardless of grade
       totalCredits += credit;
-
-      // Logic: Track backlogs if F, S, or M
       if (["F", "M", "S"].includes(grade)) {
-        if (!actualBacklogs.includes(subject)) {
-          actualBacklogs.push(subject);
-        }
+        if (!actualBacklogs.includes(subject)) actualBacklogs.push(subject);
       }
+      if (!["F", "S", "M"].includes(grade)) creditsCleared += credit;
 
-      // Logic: Credits Cleared strictly ignores F, S, and M
-      if (!["F", "S", "M"].includes(grade)) {
-        creditsCleared += credit;
-      }
-
-      // Logic: SGPA Calculation (points * credit) / totalCredits
       totalWeightedPoints += points * credit;
-
       return `<tr><td>${i + 1}</td><td>${row["Subject_Code"] || ""}</td><td>${subject}</td><td>${type}</td><td>${credit}</td><td>${grade}</td></tr>`;
     })
     .join("");
@@ -422,92 +458,40 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
     minute: "2-digit",
   });
 
-  // SMART GLASSY BANNER LOGIC
   let bannerHTML = "";
   let hasBacklogs = actualBacklogs.length > 0;
   let isOutstanding = parseFloat(sgpa) >= 9.0 && !hasBacklogs;
 
   if (isOutstanding) {
-    bannerHTML = `
-        <div class="report-status-banner status-outstanding">
-            <div class="banner-icon"><img src="https://cdn-icons-png.flaticon.com/512/3176/3176294.png" style="width: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));" alt="Medal"></div>
-            <div class="banner-content">
-                <h4>Outstanding Performance! 🏆</h4>
-                <p>Incredible job! You achieved a stellar SGPA of ${sgpa}. Keep up the excellent work!</p>
-            </div>
-        </div>
-      `;
+    bannerHTML = `<div class="report-status-banner status-outstanding"><div class="banner-icon"><img src="https://cdn-icons-png.flaticon.com/512/3176/3176294.png" style="width: 36px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));" alt="Medal"></div><div class="banner-content"><h4>Outstanding Performance! 🏆</h4><p>Incredible job! You achieved a stellar SGPA of ${sgpa}. Keep up the excellent work!</p></div></div>`;
   } else if (hasBacklogs) {
-    bannerHTML = `
-        <div class="report-status-banner status-warning">
-            <div class="banner-icon"><i class="ri-error-warning-fill"></i></div>
-            <div class="banner-content">
-                <h4>Action Required: Pending Subjects</h4>
-                <p>You have pending backlogs (${actualBacklogs.join(", ")}). Please prepare well and clear them in upcoming exams.</p>
-            </div>
-        </div>
-      `;
+    bannerHTML = `<div class="report-status-banner status-warning"><div class="banner-icon"><i class="ri-error-warning-fill"></i></div><div class="banner-content"><h4>Action Required: Pending Subjects</h4><p>You have pending backlogs (${actualBacklogs.join(", ")}). Please prepare well and clear them in upcoming exams.</p></div></div>`;
   } else {
-    bannerHTML = `
-        <div class="report-status-banner status-clear">
-            <div class="banner-icon"><i class="ri-verified-badge-fill"></i></div>
-            <div class="banner-content">
-                <h4>All Clear! 🎉</h4>
-                <p>Congratulations! You have successfully cleared all subjects for this semester.</p>
-            </div>
-        </div>
-      `;
+    bannerHTML = `<div class="report-status-banner status-clear"><div class="banner-icon"><i class="ri-verified-badge-fill"></i></div><div class="banner-content"><h4>All Clear! 🎉</h4><p>Congratulations! You have successfully cleared all subjects for this semester.</p></div></div>`;
   }
 
-  reportDiv.innerHTML = `
-        ${bannerHTML}
-        
+  reportDiv.innerHTML = `${bannerHTML}
         <div id="report-scroll-wrapper" class="report-scroll-wrapper">
             <div id="grade-sheet-target" class="grade-sheet-target">
                 <div id="grade-sheet" class="grade-sheet">
-                    <div class="sheet-top-header">
-                        <div>${timeString}</div>
-                        <div>GradeFlow - Streamlining your academic journey</div>
-                    </div>
+                    <div class="sheet-top-header"><div>${timeString}</div><div>GradeFlow - Streamlining your academic journey</div></div>
                     <div class="sheet-logos"><img src="Assets/cutm.png" alt="Logo" class="sheet-logo-img" onerror="this.src='Assets/cutm_text.jpg'"></div>
-                    <div class="sheet-titles">
-                        <h1>Centurion University of Technology and Management</h1>
-                        <h3>Jatni, Khurda, Odisha</h3>
-                        <h2>Semester Grade Sheet</h2>
-                    </div>
+                    <div class="sheet-titles"><h1>Centurion University of Technology and Management</h1><h3>Jatni, Khurda, Odisha</h3><h2>Semester Grade Sheet</h2></div>
                     <div class="student-info-grid">
                         <div class="info-row"><span class="lbl">Student Regd. No</span> <span class="val">: ${regNo}</span></div>
                         <div class="info-row"><span class="lbl">Student Name</span> <span class="val">: ${studentName.toUpperCase()}</span></div>
                         <div class="info-row"><span class="lbl">Batch</span> <span class="val">: ${batch}</span></div>
                         <div class="info-row"><span class="lbl">Semester</span> <span class="val">: Sem ${sem}</span></div>
                     </div>
-                    <table class="result-table">
-                        <thead><tr><th>SL.NO</th><th>SUB.CODE</th><th>SUBJECT</th><th>TYPE</th><th>CREDIT</th><th>GRADE</th></tr></thead>
-                        <tbody>${rowsHTML}</tbody>
-                    </table>
-                    <div class="summary-row" style="margin-top: 80px;">
-                        <div>Total Credits : ${totalCredits}</div>
-                        <div>Credits Cleared : ${creditsCleared}</div>
-                        <div>SGPA : ${sgpa}</div>
-                    </div>
-                    <div class="signature-row">
-                        <div>Date : ${dateString}</div>
-                        <div>Dean, Examinations</div>
-                    </div>
+                    <table class="result-table"><thead><tr><th>SL.NO</th><th>SUB.CODE</th><th>SUBJECT</th><th>TYPE</th><th>CREDIT</th><th>GRADE</th></tr></thead><tbody>${rowsHTML}</tbody></table>
+                    <div class="summary-row" style="margin-top: 80px;"><div>Total Credits : ${totalCredits}</div><div>Credits Cleared : ${creditsCleared}</div><div>SGPA : ${sgpa}</div></div>
+                    <div class="signature-row"><div>Date : ${dateString}</div><div>Dean, Examinations</div></div>
                 </div>
             </div>
         </div>
-        
-        <div style="text-align: center; width: 100%;">
-            <div class="inline-zoom-controls">
-                <button onclick="changeZoom(-0.1)">-</button>
-                <span id="zoom-level-label">100%</span>
-                <button onclick="changeZoom(0.1)">+</button>
-            </div>
-        </div>`;
+        <div style="text-align: center; width: 100%;"><div class="inline-zoom-controls"><button onclick="changeZoom(-0.1)">-</button><span id="zoom-level-label">100%</span><button onclick="changeZoom(0.1)">+</button></div></div>`;
 
   document.getElementById("download-actions").style.display = "flex";
-
   semInput.disabled = true;
   document.getElementById("sem-lock-icon").style.display = "inline-block";
   document.getElementById("excel-file").disabled = true;
@@ -523,13 +507,11 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
   isReportGenerated = true;
 
   if (GOOGLE_SCRIPT_URL) {
-    // We use URLSearchParams so Google Script can read it easily
     const formData = new URLSearchParams();
     formData.append("date", dateString);
     formData.append("time", timeString);
     formData.append("regNo", regNo);
     formData.append("name", studentName);
-
     fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
@@ -541,13 +523,11 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
     fitToScreen();
     initDragToScroll();
     reportDiv.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (isOutstanding) {
-      fireConfetti();
-    }
+    if (isOutstanding) fireConfetti();
   }, 50);
 });
 
-/*  WHATSAPP SHARE  */
+/* WHATSAPP SHARE */
 let promptCallback = null;
 const waInput = document.getElementById("prompt-input");
 const waSendBtn = document.getElementById("wa-send-btn");
@@ -604,7 +584,7 @@ waSendBtn.addEventListener("click", () => {
   }
 });
 
-/*  CGPA CALCULATOR  */
+/* CGPA CALCULATOR */
 function addCgpaRow() {
   const div = document.createElement("div");
   div.className = "cgpa-row";
@@ -662,7 +642,7 @@ function parseCredit(val) {
     .reduce((a, c) => a + parseFloat(c || 0), 0);
 }
 
-/*  PERFECT PDF/IMAGE EXPORTS  */
+/* EXPORTS */
 document.getElementById("download-btn").addEventListener("click", () => {
   const sheet = document.getElementById("grade-sheet");
   sheet.style.transform = "none";
@@ -694,3 +674,399 @@ document.getElementById("download-photo-btn").addEventListener("click", () => {
     applySheetZoom();
   });
 });
+
+/* =======================================================
+   ULTIMATE INTERNAL MARKS ENGINE (WITH LOADING ANIMATION)
+======================================================= */
+
+document
+  .getElementById("excel-file-internal")
+  .addEventListener("change", function (e) {
+    const fileName = e.target.files[0]
+      ? e.target.files[0].name
+      : "Upload internal marks file";
+    document.getElementById("file-name-display-internal").innerText = fileName;
+  });
+
+document
+  .getElementById("calc-internal-btn")
+  .addEventListener("click", function () {
+    const fileInput = document.getElementById("excel-file-internal");
+    const regNo = document.getElementById("regno-input-internal").value.trim();
+    const errSpan = document.getElementById("reg-error-internal");
+    const btn = this;
+
+    errSpan.style.display = "none";
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+      customAlert("Please upload your Internal Marks Excel file first.");
+      return;
+    }
+    if (!regNo || regNo.length < 5) {
+      errSpan.innerText = "Registration number required";
+      errSpan.style.display = "block";
+      return;
+    }
+
+    // PREMIUM PROCESSING ANIMATION
+    const originalText = btn.innerHTML;
+    btn.innerHTML =
+      '<i class="ri-loader-4-line ri-spin"></i> Extracting Data...';
+    btn.disabled = true;
+    btn.style.opacity = "0.8";
+
+    setTimeout(() => {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (evt) {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const wb = XLSX.read(data, { type: "array" });
+          const sheet = wb.Sheets[wb.SheetNames[0]];
+          const rawRows = XLSX.utils.sheet_to_json(sheet, {
+            header: 1,
+            defval: "",
+          });
+
+          processInternalMarks(rawRows, regNo);
+        } catch (err) {
+          console.error(err);
+          customAlert(
+            "Failed to parse the file. Please ensure it's a valid Excel/CSV file.",
+          );
+        } finally {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          btn.style.opacity = "1";
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }, 800);
+  });
+
+function processInternalMarks(rawRows, regNo) {
+  // 1. Find Header Row robustly
+  let headerRowIdx = -1,
+    rollColIdx = -1;
+  for (let r = 0; r < rawRows.length && r < 30; r++) {
+    if (!rawRows[r]) continue;
+    for (let c = 0; c < rawRows[r].length; c++) {
+      let val = String(rawRows[r][c])
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+      if (
+        val === "rollno" ||
+        val === "registrationno" ||
+        val === "regno" ||
+        val === "regdno"
+      ) {
+        headerRowIdx = r;
+        rollColIdx = c;
+        break;
+      }
+    }
+    if (headerRowIdx !== -1) break;
+  }
+
+  if (headerRowIdx === -1) {
+    customAlert(
+      "Invalid Internal Marks file. Could not find Registration/Roll No column.",
+    );
+    return;
+  }
+
+  // 2. Find Student Row robustly
+  let studentRowIdx = -1;
+  let targetReg = regNo.toLowerCase().replace(/[^a-z0-9]/g, "");
+  for (let r = headerRowIdx + 1; r < rawRows.length; r++) {
+    if (!rawRows[r]) continue;
+    let cellVal = String(rawRows[r][rollColIdx])
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+    if (cellVal === targetReg) {
+      studentRowIdx = r;
+      break;
+    }
+  }
+
+  if (studentRowIdx === -1) {
+    document.getElementById("reg-error-internal").innerText =
+      "Student registration number not found in this file.";
+    document.getElementById("reg-error-internal").style.display = "block";
+    return;
+  }
+
+  // 3. Find structural rows dynamically based on keywords
+  let subCompRowIdx = headerRowIdx;
+  let maxObtCount = 0;
+
+  for (let r = Math.max(0, headerRowIdx - 2); r <= headerRowIdx + 2; r++) {
+    if (!rawRows[r]) continue;
+    let obtCount = rawRows[r].filter(
+      (c) =>
+        String(c).toLowerCase().includes("obtain") ||
+        String(c).toLowerCase().includes("max"),
+    ).length;
+    if (obtCount > maxObtCount) {
+      maxObtCount = obtCount;
+      subCompRowIdx = r;
+    }
+  }
+
+  let compRowIdx = subCompRowIdx - 1;
+  let subjRowIdx = subCompRowIdx - 2;
+  let maxCols = rawRows.reduce((max, r) => Math.max(max, r ? r.length : 0), 0);
+
+  // 4. Smart Left-to-Right Extraction Engine
+  let subjectsList = [];
+  let curSubj = null;
+  let curComp = null;
+
+  let getCell = (r, c) =>
+    rawRows[r] && rawRows[r][c] !== undefined
+      ? String(rawRows[r][c]).trim()
+      : "";
+
+  for (let c = rollColIdx + 1; c < maxCols; c++) {
+    let rawSubj = getCell(subjRowIdx, c);
+    let rawComp = getCell(compRowIdx, c);
+    let rawSubC = getCell(subCompRowIdx, c).toLowerCase();
+    let sVal = getCell(studentRowIdx, c);
+    if (sVal === "") sVal = "NA";
+
+    if (rawSubj && rawSubj.toUpperCase() !== "NA") {
+      if (!curSubj || curSubj.rawName !== rawSubj) {
+        let name = rawSubj,
+          code = "Unknown",
+          type = "N/A";
+        let m1 = rawSubj.match(/(.*?)\s*-\s*\((.*?)\)\s*\((.*?)\s*-/);
+        let m2 = rawSubj.match(/(.*?)\s*-\s*\((.*?)\)/);
+        if (m1) {
+          name = m1[1].trim();
+          code = m1[2].trim().toUpperCase();
+          type = m1[3].trim().toUpperCase();
+        } else if (m2) {
+          name = m2[1].trim();
+          code = m2[2].trim().toUpperCase();
+        }
+
+        curSubj = { rawName: rawSubj, name, code, type, components: [] };
+        subjectsList.push(curSubj);
+        curComp = null;
+      }
+    }
+
+    if (rawComp && rawComp.toUpperCase() !== "NA") {
+      if (
+        !rawComp.toLowerCase().includes("obtain") &&
+        !rawComp.toLowerCase().includes("max") &&
+        !rawComp.toLowerCase().includes("round")
+      ) {
+        if (!curComp || curComp.name !== rawComp.toUpperCase()) {
+          curComp = {
+            name: rawComp.toUpperCase(),
+            actObt: "NA",
+            actMax: "NA",
+            rndObt: "NA",
+            rndMax: "NA",
+            lastType: "act",
+          };
+          if (curSubj) curSubj.components.push(curComp);
+        }
+      }
+    }
+
+    if (curSubj && curComp && rawSubC) {
+      if (rawSubC.includes("round")) {
+        curComp.rndObt = sVal;
+        curComp.lastType = "rnd";
+      } else if (rawSubC.includes("obtain")) {
+        curComp.actObt = sVal;
+        curComp.lastType = "act";
+      } else if (rawSubC.includes("max")) {
+        if (curComp.lastType === "rnd") {
+          curComp.rndMax = sVal;
+        } else {
+          curComp.actMax = sVal;
+          if (curComp.rndMax === "NA") curComp.rndMax = sVal;
+        }
+      }
+    }
+  }
+
+  // 5. Cleanup Empty/Invalid Blocks
+  let validSubjects = [];
+  let uniqueHeadersSet = new Set();
+
+  subjectsList.forEach((sub) => {
+    let validComps = [];
+    sub.components.forEach((comp) => {
+      if (comp.rndMax === "NA" && comp.actMax !== "NA")
+        comp.rndMax = comp.actMax;
+      if (comp.actMax === "NA" && comp.rndMax !== "NA")
+        comp.actMax = comp.rndMax;
+
+      if (
+        comp.actObt !== "NA" ||
+        comp.rndObt !== "NA" ||
+        comp.actMax !== "NA"
+      ) {
+        validComps.push(comp);
+        if (
+          comp.name !== "TOTAL" &&
+          comp.name !== "TOTAL:" &&
+          comp.name !== "INTERNAL"
+        ) {
+          uniqueHeadersSet.add(comp.name);
+        }
+      }
+    });
+    if (validComps.length > 0) {
+      sub.components = validComps;
+      validSubjects.push(sub);
+    }
+  });
+
+  if (validSubjects.length === 0) {
+    customAlert(
+      "No internal marks generated. Ensure the Excel follows the official subject/component format.",
+    );
+    return;
+  }
+
+  // 6. Build Compact, Single-Screen Matrix Layout
+  let dynamicHeaders = Array.from(uniqueHeadersSet);
+  let hasTotal = validSubjects.some((sub) =>
+    sub.components.some(
+      (c) => c.name.includes("TOTAL") || c.name.includes("INTERNAL"),
+    ),
+  );
+
+  let theadHTML = `<tr>
+        <th rowspan="2" style="padding: 12px 6px; width: 3%; text-align: center; font-size: 11px; color: #a1a1aa; border-right: 1px solid #222; border-bottom: 2px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">#</th>
+        <th rowspan="2" style="padding: 12px 10px; text-align: left; font-size: 11px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">SUBJECT DETAILS</th>`;
+
+  dynamicHeaders.forEach((h) => {
+    theadHTML += `<th colspan="2" style="padding: 8px 4px; text-align: center; font-size: 10px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 1px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10; letter-spacing: 0.5px;">${h}</th>`;
+  });
+
+  if (hasTotal) {
+    theadHTML += `<th rowspan="2" style="padding: 12px 8px; text-align: center; font-size: 12px; color: #34d399; font-weight: 800; border-left: 2px solid #10b981; border-bottom: 2px solid #10b981; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">TOTAL SCORE</th>`;
+  }
+  theadHTML += `</tr><tr>`;
+
+  dynamicHeaders.forEach((h) => {
+    theadHTML += `<th style="padding: 6px 4px; text-align: center; font-size: 9px; color: #60a5fa; border-right: 1px dashed #333; border-bottom: 2px solid #333; position: sticky; top: 34px; background: #0a0a0a; z-index: 10;">OBTAINED</th>`;
+    theadHTML += `<th style="padding: 6px 4px; text-align: center; font-size: 9px; color: #c084fc; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 34px; background: #0a0a0a; z-index: 10;">ROUND OFF</th>`;
+  });
+  theadHTML += `</tr>`;
+
+  let tbodyHTML = validSubjects
+    .map((sub, idx) => {
+      let row = `<tr style="transition: background 0.2s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+            <td style="padding: 10px 6px; text-align: center; font-weight: 600; color: #64748b; border-right: 1px solid #222; border-bottom: 1px solid #222; font-size: 11px;">${idx + 1}</td>
+            <td style="padding: 10px 10px; border-right: 2px solid #333; border-bottom: 1px solid #222;">
+                <div style="font-weight: 700; color: #f8fafc; font-size: 12px; line-height: 1.3; margin-bottom: 6px;">${sub.name}</div>
+                <div style="display: flex; gap: 4px;">
+                    <span style="background: #1e293b; padding: 2px 6px; border-radius: 4px; font-size: 9px; color: #cbd5e1; font-weight: 700; border: 1px solid #334155;">${sub.code}</span>
+                    <span style="background: rgba(168, 85, 247, 0.15); padding: 2px 6px; border-radius: 4px; font-size: 9px; color: #d8b4fe; font-weight: 800; border: 1px solid rgba(168, 85, 247, 0.3);">${sub.type}</span>
+                </div>
+            </td>`;
+
+      dynamicHeaders.forEach((h) => {
+        let comp = sub.components.find((c) => c.name === h);
+        if (comp) {
+          let actMaxStr =
+            comp.actMax !== "NA"
+              ? `<span style="font-size:9px; font-weight:600; opacity:0.7; margin-left: 2px; line-height: 1;">/${comp.actMax}</span>`
+              : "";
+          let rndMaxStr =
+            comp.rndMax !== "NA"
+              ? `<span style="font-size:9px; font-weight:600; opacity:0.7; margin-left: 2px; line-height: 1;">/${comp.rndMax}</span>`
+              : "";
+
+          let actStr =
+            comp.actObt !== "NA" && comp.actObt !== ""
+              ? `<div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 8px; border-radius: 6px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 45px;"><strong style="color: #60a5fa; font-size: 13px; font-weight: 800; line-height: 1;">${comp.actObt}</strong>${actMaxStr}</div>`
+              : `<span style="color:#475569; font-weight:700; font-size: 13px;">-</span>`;
+
+          let rndStr =
+            comp.rndObt !== "NA" && comp.rndObt !== ""
+              ? `<div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); padding: 4px 8px; border-radius: 6px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 45px;"><strong style="color: #c084fc; font-size: 13px; font-weight: 800; line-height: 1;">${comp.rndObt}</strong>${rndMaxStr}</div>`
+              : `<span style="color:#475569; font-weight:700; font-size: 13px;">-</span>`;
+
+          row += `<td style="padding: 8px 4px; text-align: center; border-right: 1px dashed #222; border-bottom: 1px solid #222;">${actStr}</td>`;
+          row += `<td style="padding: 8px 4px; text-align: center; border-right: 2px solid #333; border-bottom: 1px solid #222;">${rndStr}</td>`;
+        } else {
+          row += `<td style="padding: 8px 4px; text-align: center; color: #475569; border-right: 1px dashed #222; border-bottom: 1px solid #222; font-size: 13px;">-</td>`;
+          row += `<td style="padding: 8px 4px; text-align: center; color: #475569; border-right: 2px solid #333; border-bottom: 1px solid #222; font-size: 13px;">-</td>`;
+        }
+      });
+
+      if (hasTotal) {
+        let totComp = sub.components.find(
+          (c) => c.name.includes("TOTAL") || c.name.includes("INTERNAL"),
+        );
+        if (totComp) {
+          let tObt =
+            totComp.rndObt !== "NA" && totComp.rndObt !== ""
+              ? totComp.rndObt
+              : totComp.actObt;
+          let tMax =
+            totComp.rndMax !== "NA" && totComp.rndMax !== ""
+              ? totComp.rndMax
+              : totComp.actMax;
+          let maxStr =
+            tMax !== "NA"
+              ? `<span style="font-size:10px; font-weight:600; opacity:0.8; margin-left: 2px; line-height: 1;">/${tMax}</span>`
+              : "";
+
+          let finalVal =
+            tObt === "NA" || tObt === ""
+              ? `<span style="color:#475569; font-weight:700; font-size: 15px;">-</span>`
+              : `<div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.4); padding: 8px 12px; border-radius: 8px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 60px;"><strong style="color: #34d399; font-size: 16px; font-weight: 800; line-height: 1;">${tObt}</strong>${maxStr}</div>`;
+
+          row += `<td style="padding: 8px 8px; text-align: center; background: rgba(16, 185, 129, 0.03); border-left: 2px solid rgba(16, 185, 129, 0.3); border-bottom: 1px solid #222;">${finalVal}</td>`;
+        } else {
+          row += `<td style="padding: 8px 8px; text-align: center; color: #475569; background: rgba(16, 185, 129, 0.03); border-left: 2px solid rgba(16, 185, 129, 0.3); border-bottom: 1px solid #222; font-size: 15px;">-</td>`;
+        }
+      }
+      row += `</tr>`;
+      return row;
+    })
+    .join("");
+
+  let studentNameFallback =
+    rawRows[studentRowIdx][1] !== undefined
+      ? String(rawRows[studentRowIdx][1]).toUpperCase()
+      : "UNKNOWN";
+
+  let modalBody = document.getElementById("internal-modal-body");
+  modalBody.innerHTML = `
+        <div style="background: #0a0a0a; padding: 0;">
+            <div style="margin-bottom: 16px; padding: 18px; background: #111; border-radius: 10px; border: 1px solid #222; display: flex; flex-wrap: wrap; gap: 16px;">
+                <div style="flex: 1; min-width: 200px;">
+                    <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Student Name</span>
+                    <div style="font-size: 18px; font-weight: 800; color: #fff; margin-top: 4px;">${studentNameFallback}</div>
+                </div>
+                <div style="flex: 1; min-width: 150px;">
+                    <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Registration No</span>
+                    <div style="font-size: 18px; font-weight: 800; color: #fff; margin-top: 4px;">${regNo}</div>
+                </div>
+            </div>
+            <div class="responsive-matrix-wrapper">
+                <table style="width: 100%; white-space: nowrap; border-collapse: separate; border-spacing: 0; text-align: left; background: #0a0a0a;">
+                    <thead>${theadHTML}</thead>
+                    <tbody>${tbodyHTML}</tbody>
+                </table>
+            </div>
+        </div>
+    `;
+
+  let modalOverlay = document.getElementById("internal-result-modal");
+  if (modalOverlay) {
+    document.body.style.overflow = "hidden";
+    modalOverlay.style.display = "flex";
+  }
+}
