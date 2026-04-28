@@ -43,15 +43,119 @@
             animation: spin 1s linear infinite;
         }
 
+        /* Matrix Wrapper ensuring perfect scroll and fit */
         .responsive-matrix-wrapper {
             width: 100%;
-            max-height: 65vh;
+            flex: 1;
+            min-height: 0;
             overflow-y: auto;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            border-radius: 12px;
+            border-radius: 8px;
             border: 1px solid #333;
+            background: #0a0a0a;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .responsive-matrix-wrapper::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .responsive-matrix-wrapper::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 8px;
+        }
+
+        .responsive-matrix-wrapper::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 8px;
+        }
+
+        .responsive-matrix-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Responsive overrides for Tabs */
+        .tab-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .tab-container {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 8px;
+            border-radius: 50px;
+            scroll-behavior: smooth;
+        }
+
+        .tab-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            flex: 0 0 auto;
+            min-width: 140px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            white-space: nowrap;
+            padding: 12px 24px;
+            font-size: 14px;
+            border-radius: 40px;
+        }
+
+        /* Scroll Buttons for Small Devices */
+        .tab-scroll-btn {
+            display: none;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            position: absolute;
+            z-index: 10;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            transition: 0.2s ease;
+        }
+
+        .tab-scroll-btn:active {
+            background: #222;
+        }
+
+        .tab-scroll-btn.left {
+            left: 5px;
+        }
+
+        .tab-scroll-btn.right {
+            right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .tab-wrapper {
+                padding: 0 45px;
+            }
+
+            .tab-scroll-btn {
+                display: flex;
+            }
         }
     </style>
 </head>
@@ -151,7 +255,8 @@
         </header>
 
         <div class="tab-wrapper">
-            <div class="tab-container">
+            <button class="tab-scroll-btn left" onclick="scrollTabs(-200)"><i class="ri-arrow-left-s-line"></i></button>
+            <div class="tab-container material-card" id="main-tab-container">
                 <button class="tab-btn active" onclick="switchTab('sgpa')" id="tab-sgpa"><i
                         class="ri-file-list-3-line"></i> SGPA Tool</button>
                 <button class="tab-btn" onclick="switchTab('cgpa')" id="tab-cgpa"><i class="ri-pie-chart-line"></i> CGPA
@@ -159,6 +264,8 @@
                 <button class="tab-btn" onclick="switchTab('internal')" id="tab-internal"><i class="ri-table-line"></i>
                     Internal Marks</button>
             </div>
+            <button class="tab-scroll-btn right" onclick="scrollTabs(200)"><i
+                    class="ri-arrow-right-s-line"></i></button>
         </div>
 
         <div id="sgpa-section" class="calculator-card material-card">
@@ -350,12 +457,12 @@
     </footer>
 
     <div id="internal-result-modal"
-        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2147483640; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2147483640; display: none; align-items: center; justify-content: center; padding: 12px; box-sizing: border-box;">
         <div class="modal-content material-card popup-glass"
-            style="width: 98%; max-width: 1800px; max-height: 95vh; display: flex; flex-direction: column; overflow: hidden; padding: 0; border-radius: 12px; background: #0a0a0a; border: 1px solid #222; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);">
+            style="width: 100%; max-width: 1920px; height: 100%; max-height: 98vh; display: flex; flex-direction: column; overflow: hidden; padding: 0; border-radius: 12px; background: #0a0a0a; border: 1px solid #222; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);">
 
             <div
-                style="background: #111; padding: 20px 25px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center;">
+                style="background: #111; padding: 16px 24px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
                 <h3
                     style="margin: 0; display: flex; align-items: center; gap: 10px; font-size: 20px; color: #fff; font-weight: 700;">
                     <i class="ri-table-fill" style="color: #3b82f6;"></i> Comprehensive Internal Marks Matrix
@@ -366,8 +473,8 @@
                 </button>
             </div>
 
-            <div id="internal-modal-body" class="hide-scroll"
-                style="padding: 25px; overflow-y: auto; overflow-x: auto; flex: 1; background: #0a0a0a;">
+            <div id="internal-modal-body"
+                style="padding: 16px; display: flex; flex-direction: column; flex: 1; min-height: 0; background: #0a0a0a;">
             </div>
         </div>
     </div>

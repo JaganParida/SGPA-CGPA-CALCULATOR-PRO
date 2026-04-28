@@ -85,6 +85,14 @@ window.addEventListener("scroll", () => {
   else nav.classList.remove("scrolled");
 });
 
+/* TAB SCROLL LOGIC */
+function scrollTabs(amount) {
+  const container = document.getElementById("main-tab-container");
+  if (container) {
+    container.scrollBy({ left: amount, behavior: "smooth" });
+  }
+}
+
 /* ========================================================
    CLOSE CONFIRM LOGIC (Forced Visibility Bypass)
 ======================================================== */
@@ -95,7 +103,7 @@ window.requestCloseInternalModal = function () {
     confirmModal.style.opacity = "1";
     confirmModal.style.visibility = "visible";
     confirmModal.style.pointerEvents = "auto";
-    confirmModal.classList.add("open"); // Ensures CSS animations work if present
+    confirmModal.classList.add("open");
   }
 };
 
@@ -314,7 +322,7 @@ function switchTab(tabId) {
   const activeNavLink = document.getElementById("nav-" + tabId);
   if (activeNavLink) activeNavLink.classList.add("active");
 
-  const tabWrapper = document.querySelector(".tab-wrapper");
+  const tabWrapper = document.querySelector(".tab-container");
   if (tabWrapper)
     tabWrapper.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -943,34 +951,35 @@ function processInternalMarks(rawRows, regNo) {
     ),
   );
 
+  // Shrinked padding and min-width to pack components efficiently
   let theadHTML = `<tr>
-        <th rowspan="2" style="padding: 12px 6px; width: 3%; text-align: center; font-size: 11px; color: #a1a1aa; border-right: 1px solid #222; border-bottom: 2px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">#</th>
-        <th rowspan="2" style="padding: 12px 10px; text-align: left; font-size: 11px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">SUBJECT DETAILS</th>`;
+        <th rowspan="2" style="min-width: 40px; padding: 12px 6px; text-align: center; font-size: 13px; color: #a1a1aa; border-right: 1px solid #222; border-bottom: 2px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">#</th>
+        <th rowspan="2" style="min-width: 220px; padding: 12px 12px; text-align: left; font-size: 13px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">SUBJECT DETAILS</th>`;
 
   dynamicHeaders.forEach((h) => {
-    theadHTML += `<th colspan="2" style="padding: 8px 4px; text-align: center; font-size: 10px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 1px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10; letter-spacing: 0.5px;">${h}</th>`;
+    theadHTML += `<th colspan="2" style="min-width: 140px; padding: 10px 8px; text-align: center; font-size: 12px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 1px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10; letter-spacing: 0.5px;">${h}</th>`;
   });
 
   if (hasTotal) {
-    theadHTML += `<th rowspan="2" style="padding: 12px 8px; text-align: center; font-size: 12px; color: #34d399; font-weight: 800; border-left: 2px solid #10b981; border-bottom: 2px solid #10b981; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">TOTAL SCORE</th>`;
+    theadHTML += `<th rowspan="2" style="min-width: 110px; padding: 12px 10px; text-align: center; font-size: 14px; color: #34d399; font-weight: 800; border-left: 2px solid #10b981; border-bottom: 2px solid #10b981; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">TOTAL SCORE</th>`;
   }
   theadHTML += `</tr><tr>`;
 
   dynamicHeaders.forEach((h) => {
-    theadHTML += `<th style="padding: 6px 4px; text-align: center; font-size: 9px; color: #60a5fa; border-right: 1px dashed #333; border-bottom: 2px solid #333; position: sticky; top: 34px; background: #0a0a0a; z-index: 10;">OBTAINED</th>`;
-    theadHTML += `<th style="padding: 6px 4px; text-align: center; font-size: 9px; color: #c084fc; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 34px; background: #0a0a0a; z-index: 10;">ROUND OFF</th>`;
+    theadHTML += `<th style="min-width: 70px; padding: 8px 6px; text-align: center; font-size: 11px; color: #60a5fa; border-right: 1px dashed #333; border-bottom: 2px solid #333; position: sticky; top: 41px; background: #0a0a0a; z-index: 10;">OBTAINED</th>`;
+    theadHTML += `<th style="min-width: 70px; padding: 8px 6px; text-align: center; font-size: 11px; color: #c084fc; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 41px; background: #0a0a0a; z-index: 10;">ROUND OFF</th>`;
   });
   theadHTML += `</tr>`;
 
   let tbodyHTML = validSubjects
     .map((sub, idx) => {
       let row = `<tr style="transition: background 0.2s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
-            <td style="padding: 10px 6px; text-align: center; font-weight: 600; color: #64748b; border-right: 1px solid #222; border-bottom: 1px solid #222; font-size: 11px;">${idx + 1}</td>
-            <td style="padding: 10px 10px; border-right: 2px solid #333; border-bottom: 1px solid #222;">
-                <div style="font-weight: 700; color: #f8fafc; font-size: 12px; line-height: 1.3; margin-bottom: 6px;">${sub.name}</div>
-                <div style="display: flex; gap: 4px;">
-                    <span style="background: #1e293b; padding: 2px 6px; border-radius: 4px; font-size: 9px; color: #cbd5e1; font-weight: 700; border: 1px solid #334155;">${sub.code}</span>
-                    <span style="background: rgba(168, 85, 247, 0.15); padding: 2px 6px; border-radius: 4px; font-size: 9px; color: #d8b4fe; font-weight: 800; border: 1px solid rgba(168, 85, 247, 0.3);">${sub.type}</span>
+            <td style="padding: 12px 6px; text-align: center; font-weight: 600; color: #64748b; border-right: 1px solid #222; border-bottom: 1px solid #222; font-size: 13px;">${idx + 1}</td>
+            <td style="padding: 12px 12px; border-right: 2px solid #333; border-bottom: 1px solid #222; white-space: normal; word-break: break-word;">
+                <div style="font-weight: 700; color: #f8fafc; font-size: 14px; line-height: 1.4; margin-bottom: 8px;">${sub.name}</div>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <span style="background: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #cbd5e1; font-weight: 700; border: 1px solid #334155; white-space: nowrap;">${sub.code}</span>
+                    <span style="background: rgba(168, 85, 247, 0.15); padding: 4px 8px; border-radius: 4px; font-size: 11px; color: #d8b4fe; font-weight: 800; border: 1px solid rgba(168, 85, 247, 0.3); white-space: nowrap;">${sub.type}</span>
                 </div>
             </td>`;
 
@@ -979,28 +988,28 @@ function processInternalMarks(rawRows, regNo) {
         if (comp) {
           let actMaxStr =
             comp.actMax !== "NA"
-              ? `<span style="font-size:9px; font-weight:600; opacity:0.7; margin-left: 2px; line-height: 1;">/${comp.actMax}</span>`
+              ? `<span style="font-size:11px; font-weight:600; opacity:0.7; margin-left: 2px; line-height: 1;">/${comp.actMax}</span>`
               : "";
           let rndMaxStr =
             comp.rndMax !== "NA"
-              ? `<span style="font-size:9px; font-weight:600; opacity:0.7; margin-left: 2px; line-height: 1;">/${comp.rndMax}</span>`
+              ? `<span style="font-size:11px; font-weight:600; opacity:0.7; margin-left: 2px; line-height: 1;">/${comp.rndMax}</span>`
               : "";
 
           let actStr =
             comp.actObt !== "NA" && comp.actObt !== ""
-              ? `<div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 8px; border-radius: 6px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 45px;"><strong style="color: #60a5fa; font-size: 13px; font-weight: 800; line-height: 1;">${comp.actObt}</strong>${actMaxStr}</div>`
-              : `<span style="color:#475569; font-weight:700; font-size: 13px;">-</span>`;
+              ? `<div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); padding: 6px 10px; border-radius: 6px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 55px;"><strong style="color: #60a5fa; font-size: 14px; font-weight: 800; line-height: 1;">${comp.actObt}</strong>${actMaxStr}</div>`
+              : `<span style="color:#475569; font-weight:700; font-size: 14px;">-</span>`;
 
           let rndStr =
             comp.rndObt !== "NA" && comp.rndObt !== ""
-              ? `<div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); padding: 4px 8px; border-radius: 6px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 45px;"><strong style="color: #c084fc; font-size: 13px; font-weight: 800; line-height: 1;">${comp.rndObt}</strong>${rndMaxStr}</div>`
-              : `<span style="color:#475569; font-weight:700; font-size: 13px;">-</span>`;
+              ? `<div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); padding: 6px 10px; border-radius: 6px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 55px;"><strong style="color: #c084fc; font-size: 14px; font-weight: 800; line-height: 1;">${comp.rndObt}</strong>${rndMaxStr}</div>`
+              : `<span style="color:#475569; font-weight:700; font-size: 14px;">-</span>`;
 
-          row += `<td style="padding: 8px 4px; text-align: center; border-right: 1px dashed #222; border-bottom: 1px solid #222;">${actStr}</td>`;
-          row += `<td style="padding: 8px 4px; text-align: center; border-right: 2px solid #333; border-bottom: 1px solid #222;">${rndStr}</td>`;
+          row += `<td style="padding: 10px 8px; text-align: center; border-right: 1px dashed #222; border-bottom: 1px solid #222;">${actStr}</td>`;
+          row += `<td style="padding: 10px 8px; text-align: center; border-right: 2px solid #333; border-bottom: 1px solid #222;">${rndStr}</td>`;
         } else {
-          row += `<td style="padding: 8px 4px; text-align: center; color: #475569; border-right: 1px dashed #222; border-bottom: 1px solid #222; font-size: 13px;">-</td>`;
-          row += `<td style="padding: 8px 4px; text-align: center; color: #475569; border-right: 2px solid #333; border-bottom: 1px solid #222; font-size: 13px;">-</td>`;
+          row += `<td style="padding: 10px 8px; text-align: center; color: #475569; border-right: 1px dashed #222; border-bottom: 1px solid #222; font-size: 14px;">-</td>`;
+          row += `<td style="padding: 10px 8px; text-align: center; color: #475569; border-right: 2px solid #333; border-bottom: 1px solid #222; font-size: 14px;">-</td>`;
         }
       });
 
@@ -1019,17 +1028,17 @@ function processInternalMarks(rawRows, regNo) {
               : totComp.actMax;
           let maxStr =
             tMax !== "NA"
-              ? `<span style="font-size:10px; font-weight:600; opacity:0.8; margin-left: 2px; line-height: 1;">/${tMax}</span>`
+              ? `<span style="font-size:12px; font-weight:600; opacity:0.8; margin-left: 3px; line-height: 1;">/${tMax}</span>`
               : "";
 
           let finalVal =
             tObt === "NA" || tObt === ""
-              ? `<span style="color:#475569; font-weight:700; font-size: 15px;">-</span>`
-              : `<div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.4); padding: 8px 12px; border-radius: 8px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 60px;"><strong style="color: #34d399; font-size: 16px; font-weight: 800; line-height: 1;">${tObt}</strong>${maxStr}</div>`;
+              ? `<span style="color:#475569; font-weight:700; font-size: 16px;">-</span>`
+              : `<div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.4); padding: 8px 16px; border-radius: 8px; display: inline-flex; justify-content: center; align-items: baseline; min-width: 70px;"><strong style="color: #34d399; font-size: 16px; font-weight: 800; line-height: 1;">${tObt}</strong>${maxStr}</div>`;
 
-          row += `<td style="padding: 8px 8px; text-align: center; background: rgba(16, 185, 129, 0.03); border-left: 2px solid rgba(16, 185, 129, 0.3); border-bottom: 1px solid #222;">${finalVal}</td>`;
+          row += `<td style="padding: 12px 10px; text-align: center; background: rgba(16, 185, 129, 0.03); border-left: 2px solid rgba(16, 185, 129, 0.3); border-bottom: 1px solid #222;">${finalVal}</td>`;
         } else {
-          row += `<td style="padding: 8px 8px; text-align: center; color: #475569; background: rgba(16, 185, 129, 0.03); border-left: 2px solid rgba(16, 185, 129, 0.3); border-bottom: 1px solid #222; font-size: 15px;">-</td>`;
+          row += `<td style="padding: 12px 10px; text-align: center; color: #475569; background: rgba(16, 185, 129, 0.03); border-left: 2px solid rgba(16, 185, 129, 0.3); border-bottom: 1px solid #222; font-size: 16px;">-</td>`;
         }
       }
       row += `</tr>`;
@@ -1044,23 +1053,21 @@ function processInternalMarks(rawRows, regNo) {
 
   let modalBody = document.getElementById("internal-modal-body");
   modalBody.innerHTML = `
-        <div style="background: #0a0a0a; padding: 0;">
-            <div style="margin-bottom: 16px; padding: 18px; background: #111; border-radius: 10px; border: 1px solid #222; display: flex; flex-wrap: wrap; gap: 16px;">
-                <div style="flex: 1; min-width: 200px;">
-                    <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Student Name</span>
-                    <div style="font-size: 18px; font-weight: 800; color: #fff; margin-top: 4px;">${studentNameFallback}</div>
-                </div>
-                <div style="flex: 1; min-width: 150px;">
-                    <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Registration No</span>
-                    <div style="font-size: 18px; font-weight: 800; color: #fff; margin-top: 4px;">${regNo}</div>
-                </div>
+        <div style="margin-bottom: 16px; padding: 16px 20px; background: #111; border-radius: 10px; border: 1px solid #222; display: flex; flex-wrap: wrap; gap: 20px; flex-shrink: 0;">
+            <div style="flex: 1; min-width: 220px;">
+                <span style="font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Student Name</span>
+                <div style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">${studentNameFallback}</div>
             </div>
-            <div class="responsive-matrix-wrapper">
-                <table style="width: 100%; white-space: nowrap; border-collapse: separate; border-spacing: 0; text-align: left; background: #0a0a0a;">
-                    <thead>${theadHTML}</thead>
-                    <tbody>${tbodyHTML}</tbody>
-                </table>
+            <div style="flex: 1; min-width: 180px;">
+                <span style="font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Registration No</span>
+                <div style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">${regNo}</div>
             </div>
+        </div>
+        <div class="responsive-matrix-wrapper">
+            <table style="width: 100%; white-space: nowrap; border-collapse: separate; border-spacing: 0; text-align: left; background: #0a0a0a;">
+                <thead>${theadHTML}</thead>
+                <tbody>${tbodyHTML}</tbody>
+            </table>
         </div>
     `;
 
