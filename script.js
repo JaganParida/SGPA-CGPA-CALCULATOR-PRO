@@ -93,9 +93,6 @@ function scrollTabs(amount) {
   }
 }
 
-/* ========================================================
-   CLOSE CONFIRM LOGIC (Forced Visibility Bypass)
-======================================================== */
 window.requestCloseInternalModal = function () {
   const confirmModal = document.getElementById("custom-confirm-modal");
   if (confirmModal) {
