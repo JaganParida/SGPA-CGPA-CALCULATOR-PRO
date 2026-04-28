@@ -693,6 +693,16 @@ document
     document.getElementById("file-name-display-internal").innerText = fileName;
   });
 
+/* ---> Added "Enter" Key Listener for Internal Marks Registration Input <--- */
+document
+  .getElementById("regno-input-internal")
+  .addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("calc-internal-btn").click();
+    }
+  });
+
 document
   .getElementById("calc-internal-btn")
   .addEventListener("click", function () {
@@ -940,7 +950,7 @@ function processInternalMarks(rawRows, regNo) {
     return;
   }
 
-  // 6. Build Compact, Single-Screen Matrix Layout
+  // 6. Build Compact, Single-Screen Matrix Layout (PERFECT STICKY HEADER OVERLAP FIX)
   let dynamicHeaders = Array.from(uniqueHeadersSet);
   let hasTotal = validSubjects.some((sub) =>
     sub.components.some(
@@ -948,23 +958,22 @@ function processInternalMarks(rawRows, regNo) {
     ),
   );
 
-  // Shrinked padding and min-width to pack components efficiently
   let theadHTML = `<tr>
-        <th rowspan="2" style="min-width: 40px; padding: 12px 6px; text-align: center; font-size: 13px; color: #a1a1aa; border-right: 1px solid #222; border-bottom: 2px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">#</th>
-        <th rowspan="2" style="min-width: 220px; padding: 12px 12px; text-align: left; font-size: 13px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">SUBJECT DETAILS</th>`;
+        <th rowspan="2" style="min-width: 40px; padding: 12px 6px; text-align: center; font-size: 13px; color: #a1a1aa; border-right: 1px solid #222; border-bottom: 2px solid #333; position: sticky; top: -1px; background: #0a0a0a; z-index: 60;">#</th>
+        <th rowspan="2" style="min-width: 220px; padding: 12px 12px; text-align: left; font-size: 13px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: -1px; background: #0a0a0a; z-index: 60;">SUBJECT DETAILS</th>`;
 
   dynamicHeaders.forEach((h) => {
-    theadHTML += `<th colspan="2" style="min-width: 140px; padding: 10px 8px; text-align: center; font-size: 12px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 1px solid #333; position: sticky; top: 0; background: #0a0a0a; z-index: 10; letter-spacing: 0.5px;">${h}</th>`;
+    theadHTML += `<th colspan="2" style="height: 42px; box-sizing: border-box; min-width: 140px; padding: 10px 8px; text-align: center; font-size: 12px; color: #a1a1aa; border-right: 2px solid #333; border-bottom: 1px solid #333; position: sticky; top: -1px; background: #0a0a0a; z-index: 60; letter-spacing: 0.5px;">${h}</th>`;
   });
 
   if (hasTotal) {
-    theadHTML += `<th rowspan="2" style="min-width: 110px; padding: 12px 10px; text-align: center; font-size: 14px; color: #34d399; font-weight: 800; border-left: 2px solid #10b981; border-bottom: 2px solid #10b981; position: sticky; top: 0; background: #0a0a0a; z-index: 10;">TOTAL SCORE</th>`;
+    theadHTML += `<th rowspan="2" style="min-width: 110px; padding: 12px 10px; text-align: center; font-size: 14px; color: #34d399; font-weight: 800; border-left: 2px solid #10b981; border-bottom: 2px solid #10b981; position: sticky; top: -1px; background: #0a0a0a; z-index: 60;">TOTAL SCORE</th>`;
   }
   theadHTML += `</tr><tr>`;
 
   dynamicHeaders.forEach((h) => {
-    theadHTML += `<th style="min-width: 70px; padding: 8px 6px; text-align: center; font-size: 11px; color: #60a5fa; border-right: 1px dashed #333; border-bottom: 2px solid #333; position: sticky; top: 41px; background: #0a0a0a; z-index: 10;">OBTAINED</th>`;
-    theadHTML += `<th style="min-width: 70px; padding: 8px 6px; text-align: center; font-size: 11px; color: #c084fc; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 41px; background: #0a0a0a; z-index: 10;">ROUND OFF</th>`;
+    theadHTML += `<th style="min-width: 70px; padding: 10px 6px 8px 6px; text-align: center; font-size: 11px; color: #60a5fa; border-right: 1px dashed #333; border-bottom: 2px solid #333; position: sticky; top: 38px; background: #0a0a0a; z-index: 50;">OBTAINED</th>`;
+    theadHTML += `<th style="min-width: 70px; padding: 10px 6px 8px 6px; text-align: center; font-size: 11px; color: #c084fc; border-right: 2px solid #333; border-bottom: 2px solid #333; position: sticky; top: 38px; background: #0a0a0a; z-index: 50;">ROUND OFF</th>`;
   });
   theadHTML += `</tr>`;
 
