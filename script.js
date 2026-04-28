@@ -324,7 +324,7 @@ function switchTab(tabId) {
     tabWrapper.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-/* EXCEL PARSING (SGPA) */
+/* EXCEL PARSING (SGPA) - MULTI SHEET SUPPORT ADDED */
 document.getElementById("excel-file").addEventListener("change", function (e) {
   const fileName = e.target.files[0]
     ? e.target.files[0].name
@@ -336,14 +336,20 @@ document.getElementById("excel-file").addEventListener("change", function (e) {
       try {
         const data = new Uint8Array(evt.target.result);
         const wb = XLSX.read(data, { type: "array" });
-        const sheet = wb.Sheets[wb.SheetNames[0]];
-        const rawData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-        workbookData = rawData.map((row) => {
-          let newRow = {};
-          for (let key in row) {
-            newRow[key.trim()] = row[key];
-          }
-          return newRow;
+        workbookData = [];
+
+        // Loop through all sheets for SGPA calculation
+        wb.SheetNames.forEach((sheetName) => {
+          const sheet = wb.Sheets[sheetName];
+          const rawData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+          const formatted = rawData.map((row) => {
+            let newRow = {};
+            for (let key in row) {
+              newRow[key.trim()] = row[key];
+            }
+            return newRow;
+          });
+          workbookData = workbookData.concat(formatted);
         });
       } catch (error) {
         customAlert(
@@ -681,7 +687,7 @@ document.getElementById("download-photo-btn").addEventListener("click", () => {
 });
 
 /* =======================================================
-   ULTIMATE INTERNAL MARKS ENGINE (WITH LOADING ANIMATION)
+   ULTIMATE INTERNAL MARKS ENGINE (WITH LOADING ANIMATION & MULTI-SHEET)
 ======================================================= */
 
 document
@@ -738,13 +744,51 @@ document
         try {
           const data = new Uint8Array(evt.target.result);
           const wb = XLSX.read(data, { type: "array" });
-          const sheet = wb.Sheets[wb.SheetNames[0]];
-          const rawRows = XLSX.utils.sheet_to_json(sheet, {
-            header: 1,
-            defval: "",
-          });
 
-          processInternalMarks(rawRows, regNo);
+          let targetReg = regNo.toLowerCase().replace(/[^a-z0-9]/g, "");
+          let correctRawRows = null;
+          let foundSheetName = "UNKNOWN BRANCH";
+
+          // Loop through ALL sheets to find the student's specific branch sheet
+          for (let i = 0; i < wb.SheetNames.length; i++) {
+            const sheetName = wb.SheetNames[i];
+            const sheet = wb.Sheets[sheetName];
+            const rawRows = XLSX.utils.sheet_to_json(sheet, {
+              header: 1,
+              defval: "",
+            });
+
+            // Check if the student's registration number exists anywhere in this sheet
+            let isStudentInSheet = rawRows.some(
+              (row) =>
+                row &&
+                row.some(
+                  (cell) =>
+                    String(cell)
+                      .toLowerCase()
+                      .replace(/[^a-z0-9]/g, "") === targetReg,
+                ),
+            );
+
+            if (isStudentInSheet) {
+              correctRawRows = rawRows;
+              foundSheetName = sheetName;
+              break; // Found the student, stop searching sheets
+            }
+          }
+
+          // If found in a specific sheet, process those rows. Otherwise, fallback to the first sheet to trigger the default "not found" error
+          if (correctRawRows) {
+            processInternalMarks(correctRawRows, regNo, foundSheetName);
+          } else {
+            const fallbackSheetName = wb.SheetNames[0];
+            const fallbackSheet = wb.Sheets[fallbackSheetName];
+            const fallbackRows = XLSX.utils.sheet_to_json(fallbackSheet, {
+              header: 1,
+              defval: "",
+            });
+            processInternalMarks(fallbackRows, regNo, fallbackSheetName);
+          }
         } catch (err) {
           console.error(err);
           customAlert(
@@ -760,7 +804,7 @@ document
     }, 800);
   });
 
-function processInternalMarks(rawRows, regNo) {
+function processInternalMarks(rawRows, regNo, branchName = "") {
   // 1. Find Header Row robustly
   let headerRowIdx = -1,
     rollColIdx = -1;
@@ -1057,6 +1101,15 @@ function processInternalMarks(rawRows, regNo) {
       ? String(rawRows[studentRowIdx][1]).toUpperCase()
       : "UNKNOWN";
 
+  let branchBadgeHtml = branchName
+    ? `
+      <div style="flex: 1; min-width: 140px;">
+          <span style="font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Branch / Program</span>
+          <div style="font-size: 20px; font-weight: 800; color: #60a5fa; margin-top: 4px;">${branchName.toUpperCase()}</div>
+      </div>
+    `
+    : "";
+
   let modalBody = document.getElementById("internal-modal-body");
   modalBody.innerHTML = `
         <div style="margin-bottom: 16px; padding: 16px 20px; background: #111; border-radius: 10px; border: 1px solid #222; display: flex; flex-wrap: wrap; gap: 20px; flex-shrink: 0;">
@@ -1068,6 +1121,7 @@ function processInternalMarks(rawRows, regNo) {
                 <span style="font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Registration No</span>
                 <div style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">${regNo}</div>
             </div>
+            ${branchBadgeHtml}
         </div>
         <div class="responsive-matrix-wrapper">
             <table style="width: 100%; white-space: nowrap; border-collapse: separate; border-spacing: 0; text-align: left; background: #0a0a0a;">
