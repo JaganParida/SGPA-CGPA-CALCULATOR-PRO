@@ -19,6 +19,10 @@
     <link rel="stylesheet" href="styles.css">
 
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         .hide-scroll::-webkit-scrollbar {
             display: none;
         }
@@ -223,6 +227,167 @@
             }
         }
 
+        /* PREMIUM HORIZONTAL ANIMATED TIMELINE */
+        .modern-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            max-width: 1100px;
+            margin: 60px auto 20px auto;
+            padding: 0 20px;
+            gap: 30px;
+            flex-wrap: nowrap;
+            /* Forces a single line on desktop */
+        }
+
+        /* Connecting glowing line */
+        .modern-timeline::before {
+            content: '';
+            position: absolute;
+            top: 26px;
+            /* perfectly aligned with icons */
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(16, 185, 129, 0.3), rgba(168, 85, 247, 0.3), rgba(245, 158, 11, 0.3));
+            z-index: 0;
+        }
+
+        .timeline-item {
+            flex: 1;
+            min-width: 0;
+            /* Prevents flex children from overflowing */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .timeline-item:hover {
+            transform: translateY(-15px);
+        }
+
+        .timeline-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background: #0a0a0a;
+            /* Matches body background */
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 24px;
+            box-shadow: 0 0 0 10px #050505;
+            /* Cuts out the line behind it */
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .timeline-icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            background: currentColor;
+            opacity: 0.1;
+        }
+
+        .timeline-content {
+            position: relative;
+            width: 100%;
+        }
+
+        .timeline-bg-num {
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Inter', sans-serif;
+            font-size: 110px;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.04);
+            z-index: -1;
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .timeline-item h3 {
+            color: #f8fafc;
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-item p {
+            color: #94a3b8;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 90%;
+        }
+
+        /* Unique hover states for each step */
+        .timeline-item.blue:hover .timeline-icon {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.3), 0 0 0 10px #050505;
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        .timeline-item.blue:hover .timeline-bg-num {
+            -webkit-text-stroke: 1px rgba(59, 130, 246, 0.25);
+            transform: translateX(-50%) translateY(-10px);
+            text-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .timeline-item.emerald:hover .timeline-icon {
+            border-color: #10b981;
+            color: #10b981;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3), 0 0 0 10px #050505;
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        .timeline-item.emerald:hover .timeline-bg-num {
+            -webkit-text-stroke: 1px rgba(16, 185, 129, 0.25);
+            transform: translateX(-50%) translateY(-10px);
+            text-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+        }
+
+        .timeline-item.purple:hover .timeline-icon {
+            border-color: #a855f7;
+            color: #a855f7;
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.3), 0 0 0 10px #050505;
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        .timeline-item.purple:hover .timeline-bg-num {
+            -webkit-text-stroke: 1px rgba(168, 85, 247, 0.25);
+            transform: translateX(-50%) translateY(-10px);
+            text-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
+        }
+
+        .timeline-item.orange:hover .timeline-icon {
+            border-color: #f59e0b;
+            color: #f59e0b;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3), 0 0 0 10px #050505;
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        .timeline-item.orange:hover .timeline-bg-num {
+            -webkit-text-stroke: 1px rgba(245, 158, 11, 0.25);
+            transform: translateX(-50%) translateY(-10px);
+            text-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);
+        }
+
         @media (max-width: 768px) {
             .tab-wrapper {
                 padding: 0 45px;
@@ -236,6 +401,51 @@
                 max-width: 95%;
                 -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
                 mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            }
+
+            /* Responsive layout for timeline on mobile */
+            .modern-timeline {
+                flex-direction: column;
+                gap: 50px;
+                padding: 0 30px;
+            }
+
+            .modern-timeline::before {
+                top: 0;
+                bottom: 0;
+                left: 55px;
+                width: 2px;
+                height: 100%;
+                background: linear-gradient(180deg, rgba(59, 130, 246, 0.3), rgba(16, 185, 129, 0.3), rgba(168, 85, 247, 0.3), rgba(245, 158, 11, 0.3));
+            }
+
+            .timeline-item {
+                flex-direction: row;
+                text-align: left;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .timeline-icon {
+                margin-bottom: 0;
+                margin-right: 24px;
+                flex-shrink: 0;
+            }
+
+            .timeline-bg-num {
+                left: -15px;
+                transform: none;
+                top: -35px;
+                font-size: 80px;
+            }
+
+            .timeline-item:hover .timeline-bg-num {
+                transform: translateY(-5px);
+            }
+
+            .timeline-item p {
+                margin: 0;
+                max-width: 100%;
             }
         }
     </style>
@@ -557,6 +767,66 @@
                     <p>Share your pristine grade sheet directly to your peers or family via WhatsApp with a single
                         click.</p>
                 </div>
+            </div>
+        </section>
+
+        <!-- PREMIUM HORIZONTAL HOW-TO SECTION -->
+        <section id="how-to" class="info-section">
+            <div class="section-header text-center" style="text-align: center;">
+                <h2 class="gradient-text">How to Use GradeFlow</h2>
+                <p>Master the platform and analyze your performance in 4 simple steps.</p>
+            </div>
+
+            <div class="modern-timeline">
+
+                <div class="timeline-item blue">
+                    <div class="timeline-icon" style="color: #64748b;">
+                        <i class="ri-drive-fill"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-bg-num">01</div>
+                        <h3>Get Templates</h3>
+                        <p>Click the <strong>Drive of Excel</strong> button to securely download the officially verified
+                            university formats.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item emerald">
+                    <div class="timeline-icon" style="color: #64748b;">
+                        <i class="ri-file-excel-2-fill"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-bg-num">02</div>
+                        <h3>Generate SGPA</h3>
+                        <p>Select semester, enter Reg. No., upload Excel, and instantly generate a formatted grade
+                            sheet.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item purple">
+                    <div class="timeline-icon" style="color: #64748b;">
+                        <i class="ri-pie-chart-2-fill"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-bg-num">03</div>
+                        <h3>Calculate CGPA</h3>
+                        <p>Switch to the CGPA tool, input your SGPA scores and total credits to compute your cumulative
+                            average.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item orange">
+                    <div class="timeline-icon" style="color: #64748b;">
+                        <i class="ri-table-fill"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-bg-num">04</div>
+                        <h3>Internal Marks</h3>
+                        <p>Go to the Internals tab, upload official files to unlock a beautifully formatted subject
+                            matrix.</p>
+                    </div>
+                </div>
+
             </div>
         </section>
 
