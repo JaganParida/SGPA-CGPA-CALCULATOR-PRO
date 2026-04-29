@@ -47,7 +47,7 @@
             animation: spin 1s linear infinite;
         }
 
-        /* Matrix Wrapper ensuring perfect scroll and fit */
+        /* Matrix Wrapper */
         .responsive-matrix-wrapper {
             width: 100%;
             flex: 1;
@@ -81,71 +81,83 @@
         }
 
         /* ==========================================
-           PREMIUM TOP NAVBAR OVERRIDES 
+           ULTRA-PREMIUM FLOATING NAVBAR
            ========================================== */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1100px;
+            background: rgba(15, 15, 15, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .navbar.scrolled {
+            background: rgba(10, 10, 10, 0.85);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            width: 100%;
+            top: 0;
+            border-radius: 0 0 30px 30px;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .nav-content {
+            height: 65px;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
         .nav-menu {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             list-style: none;
         }
 
         .nav-link {
             position: relative;
-            padding: 10px 18px;
-            color: #888;
+            padding: 8px 18px;
+            color: #a1a1aa;
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
-            border-radius: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 30px;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            overflow: hidden;
             background: transparent;
-        }
-
-        /* Glowing Expand Line on Hover */
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 3px;
-            background: #3b82f6;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateX(-50%);
-            border-radius: 3px 3px 0 0;
-            box-shadow: 0 -2px 10px rgba(59, 130, 246, 0.6);
-            z-index: 2;
         }
 
         .nav-link:hover {
             color: #fff;
-            background: rgba(255, 255, 255, 0.04);
-            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .nav-link:hover::before {
-            width: 40%;
-        }
-
-        /* Active State */
         .nav-link.active {
             color: #fff;
-            background: rgba(59, 130, 246, 0.08);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .nav-link.active::before {
-            width: 60%;
-            background: #60a5fa;
-            box-shadow: 0 -2px 15px rgba(96, 165, 250, 0.8);
+        .hero-section {
+            padding-top: 130px;
+            /* Offset for floating navbar */
         }
 
         /* ==========================================
-           PREMIUM TAB NAVBAR (PILL CONTAINER) 
+           MODERN SEGMENTED CONTROL TABS
            ========================================== */
         .tab-wrapper {
             width: 100%;
@@ -154,7 +166,7 @@
             align-items: center;
             position: relative;
             padding: 0 15px;
-            margin: 20px 0 30px 0;
+            margin: 20px 0 40px 0;
         }
 
         .tab-container {
@@ -162,19 +174,17 @@
             flex-wrap: nowrap;
             justify-content: flex-start;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             width: max-content;
             max-width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            padding: 8px;
-            border-radius: 60px;
-            background: rgba(13, 13, 13, 0.85);
-            /* Deep dark glass */
+            padding: 6px;
+            border-radius: 50px;
+            background: rgba(15, 15, 15, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             scroll-behavior: smooth;
         }
 
@@ -188,74 +198,58 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             white-space: nowrap;
-            padding: 12px 28px;
+            padding: 10px 24px;
             font-size: 14px;
             font-weight: 600;
-            color: #737373;
-            border-radius: 50px;
+            color: #71717a;
+            border-radius: 40px;
             border: 1px solid transparent;
             background: transparent;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
         }
 
         .tab-btn i {
-            font-size: 18px;
-            transition: transform 0.4s ease, color 0.4s ease;
+            font-size: 16px;
+            transition: color 0.3s ease;
         }
 
         .tab-btn:hover {
-            color: #e5e5e5;
-            background: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
         }
 
-        .tab-btn:hover i {
-            transform: scale(1.15) rotate(-5deg);
-        }
-
-        /* 3D Pop-out Active State */
         .tab-btn.active {
             color: #ffffff;
-            background: #1a1a1a;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            border: 1px solid #2e2e2e;
-            transform: scale(1.02);
+            background: #27272a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .tab-btn.active i {
             color: #60a5fa;
-            /* Premium glowing blue accent */
-            filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.5));
         }
 
-        /* Scroll Buttons for Small Devices */
         .tab-scroll-btn {
             display: none;
-            background: #1a1a1a;
-            border: 1px solid #333;
+            background: #18181b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             position: absolute;
             z-index: 10;
             cursor: pointer;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             transition: 0.2s ease;
         }
 
-        .tab-scroll-btn:hover {
-            background: #222;
-            transform: scale(1.05);
-        }
-
         .tab-scroll-btn:active {
-            background: #333;
+            background: #27272a;
             transform: scale(0.95);
         }
 
@@ -267,7 +261,7 @@
             right: 5px;
         }
 
-        /* Borderless Premium Marquee - Fading into screen effect */
+        /* Premium Marquee */
         .premium-marquee-wrapper {
             width: 100%;
             max-width: 700px;
@@ -303,25 +297,24 @@
             gap: 12px;
             padding: 0 30px;
             white-space: nowrap;
-            color: var(--text-muted, #a0a0a0);
+            color: #a0a0a0;
             font-size: 14px;
             font-weight: 500;
         }
 
         .marquee-item .badge {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: #ffffff;
+            color: #fff;
             padding: 2px 10px;
             border-radius: 12px;
             font-size: 10px;
             font-weight: 800;
-            letter-spacing: 0.5px;
             text-transform: uppercase;
             box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
         }
 
         .marquee-item .highlight {
-            color: #ffffff;
+            color: #fff;
             font-weight: 700;
         }
 
@@ -342,129 +335,143 @@
             }
         }
 
-        /* NEW PREMIUM FEATURES UI (SLEEK GLOWING ROWS) */
-        .premium-feature-list {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 0 15px 40px 15px;
+        /* ==========================================
+           BENTO BOX PREMIUM FEATURES
+           ========================================== */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1050px;
+            margin: 0 auto 60px auto;
+            padding: 0 20px;
         }
 
-        .feature-row {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            padding: 30px 40px;
-            background: rgba(10, 10, 10, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
+        .bento-item {
+            background: linear-gradient(145deg, rgba(24, 24, 27, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 35px;
             position: relative;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(10px);
-            --theme-color: #555;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 240px;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 20px -5px rgba(0, 0, 0, 0.5);
         }
 
-        .feature-row::before {
-            content: '';
+        .bento-item.span-2 {
+            grid-column: span 2;
+        }
+
+        .bento-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .bento-bg-icon {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: #333;
+            top: -20px;
+            right: -20px;
+            font-size: 180px;
+            color: rgba(255, 255, 255, 0.02);
+            z-index: 0;
             transition: all 0.5s ease;
         }
 
-        .feature-row::after {
+        .bento-item:hover .bento-bg-icon {
+            transform: scale(1.1) rotate(-10deg);
+            color: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Subtle glowing radial gradients */
+        .bento-item::before {
             content: '';
             position: absolute;
-            top: 50%;
-            right: -50px;
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, var(--theme-color), transparent 70%);
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, var(--glow-color), transparent 60%);
             opacity: 0;
-            transform: translateY(-50%) scale(0.5);
-            transition: all 0.6s ease;
-            z-index: -1;
+            transition: opacity 0.6s ease;
+            z-index: 0;
             pointer-events: none;
         }
 
-        .feature-row:hover {
-            transform: translateX(10px);
-            background: rgba(20, 20, 20, 0.6);
-            border-color: rgba(255, 255, 255, 0.08);
+        .bento-item:hover::before {
+            opacity: 0.15;
         }
 
-        .feature-row:hover::before {
-            background: var(--theme-color);
-            box-shadow: 0 0 20px var(--theme-color);
+        .bento-item.blue-glow {
+            --glow-color: rgba(59, 130, 246, 0.8);
         }
 
-        .feature-row:hover::after {
-            opacity: 0.06;
-            transform: translateY(-50%) scale(1.5);
+        .bento-item.emerald-glow {
+            --glow-color: rgba(16, 185, 129, 0.8);
         }
 
-        .feature-icon-wrapper {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            background: #111;
-            border: 1px solid #222;
+        .bento-item.purple-glow {
+            --glow-color: rgba(168, 85, 247, 0.8);
+        }
+
+        .bento-item.orange-glow {
+            --glow-color: rgba(245, 158, 11, 0.8);
+        }
+
+        .bento-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .bento-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            color: #555;
-            flex-shrink: 0;
-            transition: all 0.5s ease;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            font-size: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
         }
 
-        .feature-row:hover .feature-icon-wrapper {
-            color: var(--theme-color);
-            border-color: var(--theme-color);
-            background: rgba(255, 255, 255, 0.02);
-            box-shadow: 0 10px 20px -10px var(--theme-color), inset 0 0 15px rgba(255, 255, 255, 0.05);
-            transform: rotate(-5deg) scale(1.1);
+        .bento-item.blue-glow .bento-icon {
+            color: #60a5fa;
         }
 
-        .feature-row.blue {
-            --theme-color: #3b82f6;
+        .bento-item.emerald-glow .bento-icon {
+            color: #34d399;
         }
 
-        .feature-row.emerald {
-            --theme-color: #10b981;
+        .bento-item.purple-glow .bento-icon {
+            color: #c084fc;
         }
 
-        .feature-row.purple {
-            --theme-color: #a855f7;
+        .bento-item.orange-glow .bento-icon {
+            color: #fbbf24;
         }
 
-        .feature-row.green {
-            --theme-color: #22c55e;
-        }
-
-        .feature-text-content h3 {
+        .bento-content h3 {
             color: #f8fafc;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 8px;
-            transition: color 0.3s ease;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
         }
 
-        .feature-text-content p {
-            color: #94a3b8;
-            font-size: 15px;
+        .bento-content p {
+            color: #a1a1aa;
+            font-size: 14px;
             line-height: 1.6;
             margin: 0;
         }
 
-        /* PREMIUM HORIZONTAL TIMELINE */
+        /* HORIZONTAL TIMELINE */
         .modern-timeline {
             display: flex;
             justify-content: space-between;
@@ -619,6 +626,35 @@
         }
 
         @media (max-width: 768px) {
+            .navbar {
+                width: 100%;
+                border-radius: 0 0 20px 20px;
+                top: 0;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+            }
+
+            .hero-section {
+                padding-top: 100px;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                width: 100%;
+                padding: 20px;
+                background: rgba(10, 10, 10, 0.95);
+                border-radius: 0 0 20px 20px;
+                border: 1px solid #333;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+                font-size: 16px;
+            }
+
             .tab-wrapper {
                 padding: 0 45px;
                 margin: 15px 0 20px 0;
@@ -628,35 +664,19 @@
                 display: flex;
             }
 
-            .nav-menu {
-                flex-direction: column;
-                width: 100%;
-                padding: 20px;
-            }
-
-            .nav-link {
-                width: 100%;
-                justify-content: center;
-                padding: 12px;
-                font-size: 16px;
-                border-radius: 12px;
-            }
-
             .premium-marquee-wrapper {
                 max-width: 95%;
                 -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
                 mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
             }
 
-            .feature-row {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 24px;
-                gap: 16px;
+            /* Bento Responsive */
+            .bento-grid {
+                grid-template-columns: 1fr;
             }
 
-            .feature-row:hover {
-                transform: translateX(5px);
+            .bento-item.span-2 {
+                grid-column: span 1;
             }
 
             .modern-timeline {
@@ -711,7 +731,7 @@
         <div class="nav-content">
             <div class="logo-group">
                 <div class="brand-name">
-                    <i class="ri-graduation-cap-fill" style="color: var(--text-muted); margin-right: 4px;"></i>
+                    <i class="ri-graduation-cap-fill" style="color: #60a5fa; margin-right: 4px;"></i>
                     Grade<span class="brand-accent">Flow</span>
                 </div>
             </div>
@@ -722,9 +742,9 @@
                 <li><a href="javascript:void(0)" onclick="switchTab('cgpa'); closeMenu()" class="nav-link"
                         id="nav-cgpa">CGPA</a></li>
                 <li><a href="javascript:void(0)" onclick="switchTab('internal'); closeMenu()" class="nav-link"
-                        id="nav-internal">Internal Marks</a></li>
+                        id="nav-internal">Internal</a></li>
                 <li><a href="#features" onclick="closeMenu()" class="nav-link">Features</a></li>
-                <li><a href="#how-to" onclick="closeMenu()" class="nav-link">How to Use</a></li>
+                <li><a href="#how-to" onclick="closeMenu()" class="nav-link">Guide</a></li>
             </ul>
         </div>
     </nav>
@@ -734,8 +754,7 @@
             <div class="hero-badge">Academic Year 2025-26</div>
             <h1 class="main-title">Academic Performance</h1>
             <p class="sub-title">Calculate your Semester and Cumulative GPA, and instantly visualize detailed internal
-                mark
-                breakdowns securely right in your browser. Engineered for precision.</p>
+                mark breakdowns securely right in your browser. Engineered for precision.</p>
 
             <div class="header-actions" style="margin-bottom: 24px;">
                 <button onclick="openModal()" class="glass-btn"><i class="ri-code-box-line"></i> View Algorithm</button>
@@ -746,13 +765,6 @@
             <div class="premium-marquee-wrapper"
                 onclick="switchTab('internal'); document.getElementById('internal-section').scrollIntoView({behavior: 'smooth'});">
                 <div class="marquee-track">
-                    <div class="marquee-item">
-                        <span class="badge">New</span>
-                        <span>Experience the <span class="highlight">Internal Marks Viewer!</span> <span
-                                class="marquee-link-text">Click here</span> to view detailed subject-wise marks
-                            instantly.</span>
-                        <i class="ri-arrow-right-up-line" style="color: #60a5fa;"></i>
-                    </div>
                     <div class="marquee-item">
                         <span class="badge">New</span>
                         <span>Experience the <span class="highlight">Internal Marks Viewer!</span> <span
@@ -839,10 +851,10 @@
             <button class="tab-scroll-btn left" onclick="scrollTabs(-200)"><i class="ri-arrow-left-s-line"></i></button>
             <div class="tab-container" id="main-tab-container">
                 <button class="tab-btn active" onclick="switchTab('sgpa')" id="tab-sgpa"><i
-                        class="ri-file-list-3-line"></i> SGPA Tool</button>
-                <button class="tab-btn" onclick="switchTab('cgpa')" id="tab-cgpa"><i class="ri-pie-chart-line"></i> CGPA
+                        class="ri-file-list-3-fill"></i> SGPA Tool</button>
+                <button class="tab-btn" onclick="switchTab('cgpa')" id="tab-cgpa"><i class="ri-pie-chart-fill"></i> CGPA
                     Tool</button>
-                <button class="tab-btn" onclick="switchTab('internal')" id="tab-internal"><i class="ri-table-line"></i>
+                <button class="tab-btn" onclick="switchTab('internal')" id="tab-internal"><i class="ri-table-fill"></i>
                     Internal Marks</button>
             </div>
             <button class="tab-scroll-btn right" onclick="scrollTabs(200)"><i
@@ -991,47 +1003,50 @@
         <div id="report-output" class="report-preview-wrapper"
             style="display: flex; justify-content: center; width: 100%;"></div>
 
-        <!-- NEW SLEEK LIST-BASED PREMIUM FEATURES -->
+        <!-- NEW MODERN BENTO BOX GRID FOR PREMIUM FEATURES -->
         <section id="features" class="info-section">
             <div class="section-header text-center" style="text-align: center;">
                 <h2 class="gradient-text">Premium Features</h2>
                 <p>Engineered for precision, speed, and absolute privacy.</p>
             </div>
 
-            <div class="premium-feature-list">
+            <div class="bento-grid">
 
-                <div class="feature-row blue">
-                    <div class="feature-icon-wrapper"><i class="ri-lock-password-fill"></i></div>
-                    <div class="feature-text-content">
+                <div class="bento-item span-2 blue-glow">
+                    <i class="ri-lock-password-line bento-bg-icon"></i>
+                    <div class="bento-content">
+                        <div class="bento-icon"><i class="ri-shield-check-fill"></i></div>
                         <h3>100% Local Processing</h3>
-                        <p>Your data never leaves your device. All calculations are done securely within your browser.
-                        </p>
+                        <p>Your data never leaves your device. All calculations are executed securely within your local
+                            browser instance ensuring zero data leakage.</p>
                     </div>
                 </div>
 
-                <div class="feature-row emerald">
-                    <div class="feature-icon-wrapper"><i class="ri-bar-chart-box-fill"></i></div>
-                    <div class="feature-text-content">
+                <div class="bento-item emerald-glow">
+                    <i class="ri-bar-chart-box-line bento-bg-icon"></i>
+                    <div class="bento-content">
+                        <div class="bento-icon"><i class="ri-line-chart-fill"></i></div>
                         <h3>Flawless Accuracy</h3>
                         <p>Powered by the exact mathematical algorithms used in official university grading systems.</p>
                     </div>
                 </div>
 
-                <div class="feature-row purple">
-                    <div class="feature-icon-wrapper"><i class="ri-file-download-fill"></i></div>
-                    <div class="feature-text-content">
+                <div class="bento-item purple-glow">
+                    <i class="ri-file-download-line bento-bg-icon"></i>
+                    <div class="bento-content">
+                        <div class="bento-icon"><i class="ri-download-cloud-2-fill"></i></div>
                         <h3>HD Exports</h3>
-                        <p>Download your results instantly as high-resolution PDFs or Images for sharing and printing.
-                        </p>
+                        <p>Download your results instantly as high-resolution PDFs or Images for sharing.</p>
                     </div>
                 </div>
 
-                <div class="feature-row green">
-                    <div class="feature-icon-wrapper"><i class="ri-whatsapp-fill"></i></div>
-                    <div class="feature-text-content">
-                        <h3>Instant Sharing</h3>
-                        <p>Share your pristine grade sheet directly to your peers or family via WhatsApp with a single
-                            click.</p>
+                <div class="bento-item span-2 orange-glow">
+                    <i class="ri-whatsapp-line bento-bg-icon"></i>
+                    <div class="bento-content">
+                        <div class="bento-icon"><i class="ri-whatsapp-fill"></i></div>
+                        <h3>Instant Sharing Engine</h3>
+                        <p>Generate a complete summary of your academic performance and share it directly to your peers
+                            or family via WhatsApp with a single click.</p>
                     </div>
                 </div>
 
