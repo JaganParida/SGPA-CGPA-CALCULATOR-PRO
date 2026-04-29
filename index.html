@@ -80,27 +80,101 @@
             background: #555;
         }
 
+        /* ==========================================
+           PREMIUM TOP NAVBAR OVERRIDES 
+           ========================================== */
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-link {
+            position: relative;
+            padding: 10px 18px;
+            color: #888;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        /* Glowing Expand Line on Hover */
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: #3b82f6;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+            border-radius: 3px 3px 0 0;
+            box-shadow: 0 -2px 10px rgba(59, 130, 246, 0.6);
+            z-index: 2;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-1px);
+        }
+
+        .nav-link:hover::before {
+            width: 40%;
+        }
+
+        /* Active State */
+        .nav-link.active {
+            color: #fff;
+            background: rgba(59, 130, 246, 0.08);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link.active::before {
+            width: 60%;
+            background: #60a5fa;
+            box-shadow: 0 -2px 15px rgba(96, 165, 250, 0.8);
+        }
+
+        /* ==========================================
+           PREMIUM TAB NAVBAR (PILL CONTAINER) 
+           ========================================== */
         .tab-wrapper {
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            padding: 0 10px;
+            padding: 0 15px;
+            margin: 20px 0 30px 0;
         }
 
         .tab-container {
             display: flex;
             flex-wrap: nowrap;
-            justify-content: space-around;
+            justify-content: flex-start;
             align-items: center;
-            gap: 10px;
-            width: 100%;
-            max-width: 600px;
+            gap: 6px;
+            width: max-content;
+            max-width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             padding: 8px;
-            border-radius: 50px;
+            border-radius: 60px;
+            background: rgba(13, 13, 13, 0.85);
+            /* Deep dark glass */
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             scroll-behavior: smooth;
         }
 
@@ -110,37 +184,79 @@
 
         .tab-btn {
             flex: 0 0 auto;
-            min-width: 140px;
             text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 10px;
             white-space: nowrap;
-            padding: 12px 24px;
+            padding: 12px 28px;
             font-size: 14px;
-            border-radius: 40px;
+            font-weight: 600;
+            color: #737373;
+            border-radius: 50px;
+            border: 1px solid transparent;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .tab-btn i {
+            font-size: 18px;
+            transition: transform 0.4s ease, color 0.4s ease;
+        }
+
+        .tab-btn:hover {
+            color: #e5e5e5;
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn:hover i {
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        /* 3D Pop-out Active State */
+        .tab-btn.active {
+            color: #ffffff;
+            background: #1a1a1a;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            border: 1px solid #2e2e2e;
+            transform: scale(1.02);
+        }
+
+        .tab-btn.active i {
+            color: #60a5fa;
+            /* Premium glowing blue accent */
+            filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.5));
         }
 
         /* Scroll Buttons for Small Devices */
         .tab-scroll-btn {
             display: none;
-            background: #111;
+            background: #1a1a1a;
             border: 1px solid #333;
             color: #fff;
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             position: absolute;
             z-index: 10;
             cursor: pointer;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
             transition: 0.2s ease;
         }
 
-        .tab-scroll-btn:active {
+        .tab-scroll-btn:hover {
             background: #222;
+            transform: scale(1.05);
+        }
+
+        .tab-scroll-btn:active {
+            background: #333;
+            transform: scale(0.95);
         }
 
         .tab-scroll-btn.left {
@@ -163,7 +279,6 @@
             align-items: center;
             cursor: pointer;
             transition: transform 0.2s ease;
-            /* Magic Mask: Fades out completely on the left and right edges */
             -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
             mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
         }
@@ -227,7 +342,129 @@
             }
         }
 
-        /* PREMIUM HORIZONTAL ANIMATED TIMELINE */
+        /* NEW PREMIUM FEATURES UI (SLEEK GLOWING ROWS) */
+        .premium-feature-list {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 0 15px 40px 15px;
+        }
+
+        .feature-row {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 30px 40px;
+            background: rgba(10, 10, 10, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            --theme-color: #555;
+        }
+
+        .feature-row::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #333;
+            transition: all 0.5s ease;
+        }
+
+        .feature-row::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, var(--theme-color), transparent 70%);
+            opacity: 0;
+            transform: translateY(-50%) scale(0.5);
+            transition: all 0.6s ease;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .feature-row:hover {
+            transform: translateX(10px);
+            background: rgba(20, 20, 20, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-row:hover::before {
+            background: var(--theme-color);
+            box-shadow: 0 0 20px var(--theme-color);
+        }
+
+        .feature-row:hover::after {
+            opacity: 0.06;
+            transform: translateY(-50%) scale(1.5);
+        }
+
+        .feature-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: #111;
+            border: 1px solid #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #555;
+            flex-shrink: 0;
+            transition: all 0.5s ease;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-row:hover .feature-icon-wrapper {
+            color: var(--theme-color);
+            border-color: var(--theme-color);
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: 0 10px 20px -10px var(--theme-color), inset 0 0 15px rgba(255, 255, 255, 0.05);
+            transform: rotate(-5deg) scale(1.1);
+        }
+
+        .feature-row.blue {
+            --theme-color: #3b82f6;
+        }
+
+        .feature-row.emerald {
+            --theme-color: #10b981;
+        }
+
+        .feature-row.purple {
+            --theme-color: #a855f7;
+        }
+
+        .feature-row.green {
+            --theme-color: #22c55e;
+        }
+
+        .feature-text-content h3 {
+            color: #f8fafc;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .feature-text-content p {
+            color: #94a3b8;
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* PREMIUM HORIZONTAL TIMELINE */
         .modern-timeline {
             display: flex;
             justify-content: space-between;
@@ -238,15 +475,12 @@
             padding: 0 20px;
             gap: 30px;
             flex-wrap: nowrap;
-            /* Forces a single line on desktop */
         }
 
-        /* Connecting glowing line */
         .modern-timeline::before {
             content: '';
             position: absolute;
             top: 26px;
-            /* perfectly aligned with icons */
             left: 50px;
             right: 50px;
             height: 2px;
@@ -257,7 +491,6 @@
         .timeline-item {
             flex: 1;
             min-width: 0;
-            /* Prevents flex children from overflowing */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -276,7 +509,6 @@
             height: 54px;
             border-radius: 16px;
             background: #0a0a0a;
-            /* Matches body background */
             border: 1px solid #333;
             display: flex;
             align-items: center;
@@ -284,7 +516,6 @@
             font-size: 22px;
             margin-bottom: 24px;
             box-shadow: 0 0 0 10px #050505;
-            /* Cuts out the line behind it */
             transition: all 0.4s ease;
             position: relative;
         }
@@ -335,7 +566,6 @@
             max-width: 90%;
         }
 
-        /* Unique hover states for each step */
         .timeline-item.blue:hover .timeline-icon {
             border-color: #3b82f6;
             color: #3b82f6;
@@ -391,10 +621,25 @@
         @media (max-width: 768px) {
             .tab-wrapper {
                 padding: 0 45px;
+                margin: 15px 0 20px 0;
             }
 
             .tab-scroll-btn {
                 display: flex;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+                font-size: 16px;
+                border-radius: 12px;
             }
 
             .premium-marquee-wrapper {
@@ -403,7 +648,17 @@
                 mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
             }
 
-            /* Responsive layout for timeline on mobile */
+            .feature-row {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 24px;
+                gap: 16px;
+            }
+
+            .feature-row:hover {
+                transform: translateX(5px);
+            }
+
             .modern-timeline {
                 flex-direction: column;
                 gap: 50px;
@@ -582,7 +837,7 @@
 
         <div class="tab-wrapper">
             <button class="tab-scroll-btn left" onclick="scrollTabs(-200)"><i class="ri-arrow-left-s-line"></i></button>
-            <div class="tab-container material-card" id="main-tab-container">
+            <div class="tab-container" id="main-tab-container">
                 <button class="tab-btn active" onclick="switchTab('sgpa')" id="tab-sgpa"><i
                         class="ri-file-list-3-line"></i> SGPA Tool</button>
                 <button class="tab-btn" onclick="switchTab('cgpa')" id="tab-cgpa"><i class="ri-pie-chart-line"></i> CGPA
@@ -736,37 +991,50 @@
         <div id="report-output" class="report-preview-wrapper"
             style="display: flex; justify-content: center; width: 100%;"></div>
 
+        <!-- NEW SLEEK LIST-BASED PREMIUM FEATURES -->
         <section id="features" class="info-section">
             <div class="section-header text-center" style="text-align: center;">
                 <h2 class="gradient-text">Premium Features</h2>
                 <p>Engineered for precision, speed, and absolute privacy.</p>
             </div>
-            <div class="features-showcase-grid">
-                <div class="premium-card">
-                    <div class="premium-icon" style="color: #3b82f6; background: rgba(59, 130, 246, 0.1);"><i
-                            class="ri-lock-password-fill"></i></div>
-                    <h3>100% Local Processing</h3>
-                    <p>Your data never leaves your device. All calculations are done securely within your browser.</p>
+
+            <div class="premium-feature-list">
+
+                <div class="feature-row blue">
+                    <div class="feature-icon-wrapper"><i class="ri-lock-password-fill"></i></div>
+                    <div class="feature-text-content">
+                        <h3>100% Local Processing</h3>
+                        <p>Your data never leaves your device. All calculations are done securely within your browser.
+                        </p>
+                    </div>
                 </div>
-                <div class="premium-card">
-                    <div class="premium-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);"><i
-                            class="ri-bar-chart-box-fill"></i></div>
-                    <h3>Flawless Accuracy</h3>
-                    <p>Powered by the exact mathematical algorithms used in official university grading systems.</p>
+
+                <div class="feature-row emerald">
+                    <div class="feature-icon-wrapper"><i class="ri-bar-chart-box-fill"></i></div>
+                    <div class="feature-text-content">
+                        <h3>Flawless Accuracy</h3>
+                        <p>Powered by the exact mathematical algorithms used in official university grading systems.</p>
+                    </div>
                 </div>
-                <div class="premium-card">
-                    <div class="premium-icon" style="color: #a855f7; background: rgba(168, 85, 247, 0.1);"><i
-                            class="ri-file-download-fill"></i></div>
-                    <h3>HD Exports</h3>
-                    <p>Download your results instantly as high-resolution PDFs or Images for sharing and printing.</p>
+
+                <div class="feature-row purple">
+                    <div class="feature-icon-wrapper"><i class="ri-file-download-fill"></i></div>
+                    <div class="feature-text-content">
+                        <h3>HD Exports</h3>
+                        <p>Download your results instantly as high-resolution PDFs or Images for sharing and printing.
+                        </p>
+                    </div>
                 </div>
-                <div class="premium-card">
-                    <div class="premium-icon" style="color: #22c55e; background: rgba(34, 197, 94, 0.1);"><i
-                            class="ri-whatsapp-fill"></i></div>
-                    <h3>Instant Sharing</h3>
-                    <p>Share your pristine grade sheet directly to your peers or family via WhatsApp with a single
-                        click.</p>
+
+                <div class="feature-row green">
+                    <div class="feature-icon-wrapper"><i class="ri-whatsapp-fill"></i></div>
+                    <div class="feature-text-content">
+                        <h3>Instant Sharing</h3>
+                        <p>Share your pristine grade sheet directly to your peers or family via WhatsApp with a single
+                            click.</p>
+                    </div>
                 </div>
+
             </div>
         </section>
 
