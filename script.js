@@ -758,7 +758,7 @@ document
               defval: "",
             });
 
-            // Check if the student's registration number exists anywhere in this sheet
+           
             let isStudentInSheet = rawRows.some(
               (row) =>
                 row &&
