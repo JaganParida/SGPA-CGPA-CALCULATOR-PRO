@@ -14,715 +14,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.8.0/fonts/remixicon.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-
-        .hide-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .hide-scroll {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .ri-spin {
-            display: inline-block;
-            animation: spin 1s linear infinite;
-        }
-
-        /* Matrix Wrapper */
-        .responsive-matrix-wrapper {
-            width: 100%;
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #0a0a0a;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-        }
-
-        .responsive-matrix-wrapper::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .responsive-matrix-wrapper::-webkit-scrollbar-track {
-            background: #111;
-            border-radius: 8px;
-        }
-
-        .responsive-matrix-wrapper::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 8px;
-        }
-
-        .responsive-matrix-wrapper::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        /* ==========================================
-           ULTRA-PREMIUM FLOATING NAVBAR
-           ========================================== */
-        .navbar {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 95%;
-            max-width: 1100px;
-            background: rgba(15, 15, 15, 0.65);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 50px;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        }
-
-        .navbar.scrolled {
-            background: rgba(10, 10, 10, 0.85);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            width: 100%;
-            top: 0;
-            border-radius: 0 0 30px 30px;
-            border-top: none;
-            border-left: none;
-            border-right: none;
-        }
-
-        .nav-content {
-            height: 65px;
-            padding: 0 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            list-style: none;
-        }
-
-        .nav-link {
-            position: relative;
-            padding: 8px 18px;
-            color: #a1a1aa;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            background: transparent;
-        }
-
-        .nav-link:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-link.active {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .hero-section {
-            padding-top: 130px;
-            /* Offset for floating navbar */
-        }
-
-        /* ==========================================
-           MODERN SEGMENTED CONTROL TABS
-           ========================================== */
-        .tab-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 0 15px;
-            margin: 20px 0 40px 0;
-        }
-
-        .tab-container {
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 4px;
-            width: max-content;
-            max-width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 6px;
-            border-radius: 50px;
-            background: rgba(15, 15, 15, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            scroll-behavior: smooth;
-        }
-
-        .tab-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .tab-btn {
-            flex: 0 0 auto;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            padding: 10px 24px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #71717a;
-            border-radius: 40px;
-            border: 1px solid transparent;
-            background: transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn i {
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
-
-        .tab-btn:hover {
-            color: #d4d4d8;
-        }
-
-        .tab-btn.active {
-            color: #ffffff;
-            background: #27272a;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .tab-btn.active i {
-            color: #60a5fa;
-        }
-
-        .tab-scroll-btn {
-            display: none;
-            background: #18181b;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            position: absolute;
-            z-index: 10;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            transition: 0.2s ease;
-        }
-
-        .tab-scroll-btn:active {
-            background: #27272a;
-            transform: scale(0.95);
-        }
-
-        .tab-scroll-btn.left {
-            left: 5px;
-        }
-
-        .tab-scroll-btn.right {
-            right: 5px;
-        }
-
-        /* Premium Marquee */
-        .premium-marquee-wrapper {
-            width: 100%;
-            max-width: 700px;
-            margin: 0 auto 24px auto;
-            padding: 10px 0;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-        }
-
-        .premium-marquee-wrapper:active {
-            transform: scale(0.98);
-        }
-
-        .marquee-track {
-            display: flex;
-            width: max-content;
-            animation: marquee-scroll 18s linear infinite;
-        }
-
-        .premium-marquee-wrapper:hover .marquee-track {
-            animation-play-state: paused;
-        }
-
-        .marquee-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0 30px;
-            white-space: nowrap;
-            color: #a0a0a0;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .marquee-item .badge {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: #fff;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
-        }
-
-        .marquee-item .highlight {
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .marquee-link-text {
-            color: #60a5fa;
-            font-weight: 700;
-            text-decoration: underline;
-            text-underline-offset: 2px;
-        }
-
-        @keyframes marquee-scroll {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        /* ==========================================
-           BENTO BOX PREMIUM FEATURES
-           ========================================== */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            max-width: 1050px;
-            margin: 0 auto 60px auto;
-            padding: 0 20px;
-        }
-
-        .bento-item {
-            background: linear-gradient(145deg, rgba(24, 24, 27, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 35px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            min-height: 240px;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 20px -5px rgba(0, 0, 0, 0.5);
-        }
-
-        .bento-item.span-2 {
-            grid-column: span 2;
-        }
-
-        .bento-item:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .bento-bg-icon {
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            font-size: 180px;
-            color: rgba(255, 255, 255, 0.02);
-            z-index: 0;
-            transition: all 0.5s ease;
-        }
-
-        .bento-item:hover .bento-bg-icon {
-            transform: scale(1.1) rotate(-10deg);
-            color: rgba(255, 255, 255, 0.04);
-        }
-
-        /* Subtle glowing radial gradients */
-        .bento-item::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, var(--glow-color), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .bento-item:hover::before {
-            opacity: 0.15;
-        }
-
-        .bento-item.blue-glow {
-            --glow-color: rgba(59, 130, 246, 0.8);
-        }
-
-        .bento-item.emerald-glow {
-            --glow-color: rgba(16, 185, 129, 0.8);
-        }
-
-        .bento-item.purple-glow {
-            --glow-color: rgba(168, 85, 247, 0.8);
-        }
-
-        .bento-item.orange-glow {
-            --glow-color: rgba(245, 158, 11, 0.8);
-        }
-
-        .bento-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .bento-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-        }
-
-        .bento-item.blue-glow .bento-icon {
-            color: #60a5fa;
-        }
-
-        .bento-item.emerald-glow .bento-icon {
-            color: #34d399;
-        }
-
-        .bento-item.purple-glow .bento-icon {
-            color: #c084fc;
-        }
-
-        .bento-item.orange-glow .bento-icon {
-            color: #fbbf24;
-        }
-
-        .bento-content h3 {
-            color: #f8fafc;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-        }
-
-        .bento-content p {
-            color: #a1a1aa;
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        /* HORIZONTAL TIMELINE */
-        .modern-timeline {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            position: relative;
-            max-width: 1100px;
-            margin: 60px auto 20px auto;
-            padding: 0 20px;
-            gap: 30px;
-            flex-wrap: nowrap;
-        }
-
-        .modern-timeline::before {
-            content: '';
-            position: absolute;
-            top: 26px;
-            left: 50px;
-            right: 50px;
-            height: 2px;
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(16, 185, 129, 0.3), rgba(168, 85, 247, 0.3), rgba(245, 158, 11, 0.3));
-            z-index: 0;
-        }
-
-        .timeline-item {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .timeline-item:hover {
-            transform: translateY(-15px);
-        }
-
-        .timeline-icon {
-            width: 54px;
-            height: 54px;
-            border-radius: 16px;
-            background: #0a0a0a;
-            border: 1px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            margin-bottom: 24px;
-            box-shadow: 0 0 0 10px #050505;
-            transition: all 0.4s ease;
-            position: relative;
-        }
-
-        .timeline-icon::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 16px;
-            background: currentColor;
-            opacity: 0.1;
-        }
-
-        .timeline-content {
-            position: relative;
-            width: 100%;
-        }
-
-        .timeline-bg-num {
-            position: absolute;
-            top: -70px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Inter', sans-serif;
-            font-size: 110px;
-            font-weight: 900;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.04);
-            z-index: -1;
-            transition: all 0.5s ease;
-            pointer-events: none;
-        }
-
-        .timeline-item h3 {
-            color: #f8fafc;
-            font-size: 18px;
-            margin-bottom: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .timeline-item p {
-            color: #94a3b8;
-            font-size: 13px;
-            line-height: 1.6;
-            margin: 0 auto;
-            max-width: 90%;
-        }
-
-        .timeline-item.blue:hover .timeline-icon {
-            border-color: #3b82f6;
-            color: #3b82f6;
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.3), 0 0 0 10px #050505;
-            transform: rotate(-10deg) scale(1.1);
-        }
-
-        .timeline-item.blue:hover .timeline-bg-num {
-            -webkit-text-stroke: 1px rgba(59, 130, 246, 0.25);
-            transform: translateX(-50%) translateY(-10px);
-            text-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
-        }
-
-        .timeline-item.emerald:hover .timeline-icon {
-            border-color: #10b981;
-            color: #10b981;
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3), 0 0 0 10px #050505;
-            transform: rotate(-10deg) scale(1.1);
-        }
-
-        .timeline-item.emerald:hover .timeline-bg-num {
-            -webkit-text-stroke: 1px rgba(16, 185, 129, 0.25);
-            transform: translateX(-50%) translateY(-10px);
-            text-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
-        }
-
-        .timeline-item.purple:hover .timeline-icon {
-            border-color: #a855f7;
-            color: #a855f7;
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.3), 0 0 0 10px #050505;
-            transform: rotate(-10deg) scale(1.1);
-        }
-
-        .timeline-item.purple:hover .timeline-bg-num {
-            -webkit-text-stroke: 1px rgba(168, 85, 247, 0.25);
-            transform: translateX(-50%) translateY(-10px);
-            text-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
-        }
-
-        .timeline-item.orange:hover .timeline-icon {
-            border-color: #f59e0b;
-            color: #f59e0b;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3), 0 0 0 10px #050505;
-            transform: rotate(-10deg) scale(1.1);
-        }
-
-        .timeline-item.orange:hover .timeline-bg-num {
-            -webkit-text-stroke: 1px rgba(245, 158, 11, 0.25);
-            transform: translateX(-50%) translateY(-10px);
-            text-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                width: 100%;
-                border-radius: 0 0 20px 20px;
-                top: 0;
-                border-top: none;
-                border-left: none;
-                border-right: none;
-            }
-
-            .hero-section {
-                padding-top: 100px;
-            }
-
-            .nav-menu {
-                flex-direction: column;
-                width: 100%;
-                padding: 20px;
-                background: rgba(10, 10, 10, 0.95);
-                border-radius: 0 0 20px 20px;
-                border: 1px solid #333;
-            }
-
-            .nav-link {
-                width: 100%;
-                justify-content: center;
-                padding: 12px;
-                font-size: 16px;
-            }
-
-            .tab-wrapper {
-                padding: 0 45px;
-                margin: 15px 0 20px 0;
-            }
-
-            .tab-scroll-btn {
-                display: flex;
-            }
-
-            .premium-marquee-wrapper {
-                max-width: 95%;
-                -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-                mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-            }
-
-            .bento-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .bento-item.span-2 {
-                grid-column: span 1;
-            }
-
-            .modern-timeline {
-                flex-direction: column;
-                gap: 50px;
-                padding: 0 30px;
-            }
-
-            .modern-timeline::before {
-                top: 0;
-                bottom: 0;
-                left: 55px;
-                width: 2px;
-                height: 100%;
-                background: linear-gradient(180deg, rgba(59, 130, 246, 0.3), rgba(16, 185, 129, 0.3), rgba(168, 85, 247, 0.3), rgba(245, 158, 11, 0.3));
-            }
-
-            .timeline-item {
-                flex-direction: row;
-                text-align: left;
-                align-items: flex-start;
-                width: 100%;
-            }
-
-            .timeline-icon {
-                margin-bottom: 0;
-                margin-right: 24px;
-                flex-shrink: 0;
-            }
-
-            .timeline-bg-num {
-                left: -15px;
-                transform: none;
-                top: -35px;
-                font-size: 80px;
-            }
-
-            .timeline-item:hover .timeline-bg-num {
-                transform: translateY(-5px);
-            }
-
-            .timeline-item p {
-                margin: 0;
-                max-width: 100%;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -730,7 +25,7 @@
         <div class="nav-content">
             <div class="logo-group">
                 <div class="brand-name">
-                    <i class="ri-graduation-cap-fill" style="color: #60a5fa; margin-right: 4px;"></i>
+                    <i class="ri-graduation-cap-fill brand-icon"></i>
                     Grade<span class="brand-accent">Flow</span>
                 </div>
             </div>
@@ -755,7 +50,7 @@
             <p class="sub-title">Calculate your Semester and Cumulative GPA, and instantly visualize detailed internal
                 mark breakdowns securely right in your browser. Engineered for precision.</p>
 
-            <div class="header-actions" style="margin-bottom: 24px;">
+            <div class="header-actions">
                 <button onclick="openModal()" class="glass-btn"><i class="ri-code-box-line"></i> View Algorithm</button>
                 <button onclick="openExcelModal()" class="glass-btn secondary-glass"><i class="ri-drive-line"></i> Drive
                     of Excel</button>
@@ -769,21 +64,21 @@
                         <span>Experience the <span class="highlight">Internal Marks Viewer!</span> <span
                                 class="marquee-link-text">Click here</span> to view detailed subject-wise marks
                             instantly.</span>
-                        <i class="ri-arrow-right-up-line" style="color: #60a5fa;"></i>
+                        <i class="ri-arrow-right-up-line marquee-arrow"></i>
                     </div>
                     <div class="marquee-item">
                         <span class="badge">New</span>
                         <span>Experience the <span class="highlight">Internal Marks Viewer!</span> <span
                                 class="marquee-link-text">Click here</span> to view detailed subject-wise marks
                             instantly.</span>
-                        <i class="ri-arrow-right-up-line" style="color: #60a5fa;"></i>
+                        <i class="ri-arrow-right-up-line marquee-arrow"></i>
                     </div>
                     <div class="marquee-item">
                         <span class="badge">New</span>
                         <span>Experience the <span class="highlight">Internal Marks Viewer!</span> <span
                                 class="marquee-link-text">Click here</span> to view detailed subject-wise marks
                             instantly.</span>
-                        <i class="ri-arrow-right-up-line" style="color: #60a5fa;"></i>
+                        <i class="ri-arrow-right-up-line marquee-arrow"></i>
                     </div>
                 </div>
             </div>
@@ -836,10 +131,10 @@
                             <td>Below Average</td>
                         </tr>
                         <tr>
-                            <td><span class="grade-badge badge-f" style="background:#ff4444; color:#fff;">F</span></td>
+                            <td><span class="grade-badge badge-f">F</span></td>
                             <td>Below 40</td>
-                            <td class="pts-col fail-pts" style="color:#ff4444;">2</td>
-                            <td class="fail-text" style="color:#ff4444;">Fail</td>
+                            <td class="pts-col fail-pts">2</td>
+                            <td class="fail-text">Fail</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1002,15 +297,14 @@
         <div id="report-output" class="report-preview-wrapper"
             style="display: flex; justify-content: center; width: 100%;"></div>
 
-        <!-- NEW MODERN BENTO BOX GRID FOR PREMIUM FEATURES -->
+        <!-- BENTO GRID FEATURES -->
         <section id="features" class="info-section">
-            <div class="section-header text-center" style="text-align: center;">
+            <div class="section-header text-center">
                 <h2 class="gradient-text">Premium Features</h2>
                 <p>Engineered for precision, speed, and absolute privacy.</p>
             </div>
 
             <div class="bento-grid">
-
                 <div class="bento-item span-2 blue-glow">
                     <i class="ri-lock-password-line bento-bg-icon"></i>
                     <div class="bento-content">
@@ -1048,19 +342,17 @@
                             or family via WhatsApp with a single click.</p>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        <!-- PREMIUM HORIZONTAL HOW-TO SECTION -->
+        <!-- HOW-TO TIMELINE -->
         <section id="how-to" class="info-section">
-            <div class="section-header text-center" style="text-align: center;">
+            <div class="section-header text-center">
                 <h2 class="gradient-text">How to Use GradeFlow</h2>
                 <p>Master the platform and analyze your performance in 4 simple steps.</p>
             </div>
 
             <div class="modern-timeline">
-
                 <div class="timeline-item blue">
                     <div class="timeline-icon" style="color: #64748b;">
                         <i class="ri-drive-fill"></i>
@@ -1108,45 +400,39 @@
                             matrix.</p>
                     </div>
                 </div>
-
             </div>
         </section>
-
     </div>
+
     <footer class="main-footer">
         <div class="footer-links">
             <a href="https://github.com/JaganParida" target="_blank"><i class="ri-github-fill"></i> GitHub</a>
             <a href="https://www.linkedin.com/in/jagan-parida04" target="_blank"><i class="ri-linkedin-fill"></i>
                 LinkedIn</a>
         </div>
-        <p class="copyright">Developed with <i style="color: red;" class="ri-heart-fill"></i> by <strong
-                style="color: #fff;">Jagan Parida</strong></p>
-        <p class="copyright" style="font-size: 11px; margin-top: 5px;">&copy; 2026 Academic Tools Suite.</p>
+        <p class="copyright">Developed with <i class="ri-heart-fill footer-heart"></i> by <strong
+                class="footer-author">Jagan Parida</strong></p>
+        <p class="copyright footer-copy">&copy; 2026 Academic Tools Suite.</p>
     </footer>
 
+    <!-- Internal Result Modal -->
     <div id="internal-result-modal"
         style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2147483640; display: none; align-items: center; justify-content: center; padding: 12px; box-sizing: border-box;">
         <div class="modal-content material-card popup-glass"
             style="width: 100%; max-width: 1920px; height: 100%; max-height: 98vh; display: flex; flex-direction: column; overflow: hidden; padding: 0; border-radius: 12px; background: #0a0a0a; border: 1px solid #222; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);">
-
-            <div
-                style="background: #111; padding: 16px 24px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
-                <h3
-                    style="margin: 0; display: flex; align-items: center; gap: 10px; font-size: 20px; color: #fff; font-weight: 700;">
-                    <i class="ri-table-fill" style="color: #3b82f6;"></i> Comprehensive Internal Marks Matrix
+            <div class="internal-modal-header">
+                <h3 class="internal-modal-title">
+                    <i class="ri-table-fill internal-modal-title-icon"></i> Comprehensive Internal Marks Matrix
                 </h3>
-                <button onclick="requestCloseInternalModal()"
-                    style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 50%; border: 1px solid rgba(239, 68, 68, 0.3); width: 44px; height: 44px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;">
+                <button onclick="requestCloseInternalModal()" class="internal-modal-close-btn">
                     <i class="ri-close-line" style="font-size: 26px;"></i>
                 </button>
             </div>
-
-            <div id="internal-modal-body"
-                style="padding: 16px; display: flex; flex-direction: column; flex: 1; min-height: 0; background: #0a0a0a;">
-            </div>
+            <div id="internal-modal-body" class="internal-modal-body"></div>
         </div>
     </div>
 
+    <!-- Custom Confirm Modal -->
     <div id="custom-confirm-modal" class="modal-overlay"
         style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); align-items: center; justify-content: center; z-index: 2147483647;">
         <div class="modal-content material-card popup-glass text-center"
@@ -1166,6 +452,7 @@
         </div>
     </div>
 
+    <!-- Formula Modal -->
     <div id="formula-modal" class="modal-overlay">
         <div class="modal-content material-card popup-glass">
             <button class="close-modal" onclick="closeModal()"><i class="ri-close-line"></i></button>
@@ -1186,6 +473,7 @@
         </div>
     </div>
 
+    <!-- Excel Drive Modal -->
     <div id="excel-modal" class="modal-overlay">
         <div class="modal-content material-card popup-glass text-center">
             <button class="close-modal" onclick="closeExcelModal()"><i class="ri-close-line"></i></button>
@@ -1197,6 +485,7 @@
         </div>
     </div>
 
+    <!-- Custom Alert Modal -->
     <div id="custom-alert" class="modal-overlay">
         <div class="modal-content material-card popup-glass text-center">
             <div class="popup-icon-alert" style="color: #ef4444;"><i class="ri-error-warning-fill"></i></div>
@@ -1206,6 +495,7 @@
         </div>
     </div>
 
+    <!-- Custom Prompt Modal -->
     <div id="custom-prompt" class="modal-overlay">
         <div class="modal-content material-card popup-glass">
             <button class="close-modal" onclick="closeCustomPrompt()"><i class="ri-close-line"></i></button>
