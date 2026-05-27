@@ -527,6 +527,8 @@ function renderTop10UI(title, rawData) {
     : `<div class="tp-footer"><p class="tp-no-more">All ${top100.length} performers shown</p></div>`;
 
   let leaderboardSection = document.createElement("section");
+  const semInput = document.getElementById("semester-number");
+  const sem = semInput.value;
   leaderboardSection.id = "leaderboard-standalone-section";
   leaderboardSection.className = "tp-master-container tp-standalone-section";
   leaderboardSection.innerHTML = `
@@ -541,7 +543,7 @@ function renderTop10UI(title, rawData) {
           <div class="tp-icon-wrap">${SVG_TROPHY_TP}</div>
           <div>
             <p class="tp-title">Top Performers</p>
-            <p class="tp-subtitle">Ranked by Semester GPA &mdash; Academic Year 2026&ndash;27</p>
+            <p class="tp-subtitle">Ranked by Semester GPA &mdash; of Semester ${sem}</p>
           </div>
         </div>
         <div class="tp-count-badge">${SVG_USERS_TP}&nbsp;<em>${top100.length}</em> ranked</div>
