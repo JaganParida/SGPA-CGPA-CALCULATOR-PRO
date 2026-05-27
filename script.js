@@ -483,7 +483,7 @@ function buildTPRow(student, rank) {
     </tr>`;
 }
 
-/* Render the list strictly for top 50 */
+/* Render the list strictly for top 100 with dynamic expand */
 function renderTop10UI(title, rawData) {
   // Clear old table if it exists
   const oldTable = document.getElementById("leaderboard-standalone-section");
@@ -500,25 +500,31 @@ function renderTop10UI(title, rawData) {
     return diff !== 0 ? diff : a.name.localeCompare(b.name);
   });
 
-  // Cut strictly to top 50
-  const top50 = sorted.slice(0, 50);
-  const visible = 10;
+  // Cut strictly to top 100
+  const top100 = sorted.slice(0, 100);
 
-  let topRowsHTML = "";
-  let extraRowsHTML = "";
+  // Store Global State for toggling
+  window.tpTotalCount = top100.length;
+  window.tpVisibleStage = 1;
 
-  top50.forEach((student, i) => {
+  let html1to10 = "";
+  let html11to50 = "";
+  let html51to100 = "";
+
+  top100.forEach((student, i) => {
     const rank = i + 1;
     const rowHTML = buildTPRow(student, rank);
-    if (rank <= visible) topRowsHTML += rowHTML;
-    else extraRowsHTML += rowHTML;
+    if (rank <= 10) html1to10 += rowHTML;
+    else if (rank <= 50) html11to50 += rowHTML;
+    else html51to100 += rowHTML;
   });
 
-  const hasExtra = extraRowsHTML.length > 0;
-  const extraCount = top50.length - visible;
+  const hasExtra = top100.length > 10;
+  const extraCount = top100.length - 10;
+
   const footerHTML = hasExtra
-    ? `<div class="tp-footer"><button class="tp-toggle-btn" id="tp-toggle-btn" onclick="toggleTPExtra()">${SVG_USERS_TP}<span id="tp-btn-label">View ${extraCount} more</span>${SVG_CHEVRON_TP}</button></div>`
-    : `<div class="tp-footer"><p class="tp-no-more">All ${top50.length} performers shown</p></div>`;
+    ? `<div class="tp-footer"><button class="tp-toggle-btn" id="tp-toggle-btn" onclick="toggleTPExtra()">${SVG_USERS_TP}<span id="tp-btn-label">View rest ${extraCount}</span>${SVG_CHEVRON_TP}</button></div>`
+    : `<div class="tp-footer"><p class="tp-no-more">All ${top100.length} performers shown</p></div>`;
 
   let leaderboardSection = document.createElement("section");
   leaderboardSection.id = "leaderboard-standalone-section";
@@ -538,7 +544,7 @@ function renderTop10UI(title, rawData) {
             <p class="tp-subtitle">Ranked by Semester GPA &mdash; Academic Year 2025&ndash;26</p>
           </div>
         </div>
-        <div class="tp-count-badge">${SVG_USERS_TP}&nbsp;<em>${top50.length}</em> ranked</div>
+        <div class="tp-count-badge">${SVG_USERS_TP}&nbsp;<em>${top100.length}</em> ranked</div>
       </div>
       <div class="tp-table-wrap">
         <table class="tp-table">
@@ -556,8 +562,9 @@ function renderTop10UI(title, rawData) {
               <th class="th-score">SGPA</th>
             </tr>
           </thead>
-          <tbody id="tp-top10-body">${topRowsHTML}</tbody>
-          <tbody class="tp-extra-rows" id="tp-extra-body">${extraRowsHTML}</tbody>
+          <tbody id="tp-body-1">${html1to10}</tbody>
+          <tbody class="tp-extra-rows" id="tp-body-2">${html11to50}</tbody>
+          <tbody class="tp-extra-rows" id="tp-body-3">${html51to100}</tbody>
         </table>
       </div>
       ${footerHTML}
@@ -592,20 +599,39 @@ function renderTop10UI(title, rawData) {
 }
 
 window.toggleTPExtra = function () {
-  const extra = document.getElementById("tp-extra-body");
+  const b2 = document.getElementById("tp-body-2");
+  const b3 = document.getElementById("tp-body-3");
   const btn = document.getElementById("tp-toggle-btn");
   const label = document.getElementById("tp-btn-label");
-  if (!extra || !btn) return;
-  const isVisible = extra.classList.contains("visible");
-  if (isVisible) {
-    extra.classList.remove("visible");
-    btn.classList.remove("expanded");
-    label.textContent = btn.dataset.moreLabel || "View more";
-  } else {
-    extra.classList.add("visible");
-    btn.classList.add("expanded");
-    btn.dataset.moreLabel = label.textContent;
+  if (!btn) return;
+
+  const total = window.tpTotalCount || 100;
+
+  if (window.tpVisibleStage === 1) {
+    // Expand to 50
+    if (b2) b2.classList.add("visible");
+    window.tpVisibleStage = 2;
+    let remain = total - 50;
+    if (remain > 0) {
+      label.textContent = `View rest ${remain}`;
+      btn.classList.remove("expanded");
+    } else {
+      label.textContent = "Show less";
+      btn.classList.add("expanded");
+    }
+  } else if (window.tpVisibleStage === 2 && total > 50) {
+    // Expand up to 100
+    if (b3) b3.classList.add("visible");
+    window.tpVisibleStage = 3;
     label.textContent = "Show less";
+    btn.classList.add("expanded");
+  } else {
+    // Collapse back to 10
+    if (b2) b2.classList.remove("visible");
+    if (b3) b3.classList.remove("visible");
+    window.tpVisibleStage = 1;
+    label.textContent = `View rest ${total - 10}`;
+    btn.classList.remove("expanded");
   }
 };
 
