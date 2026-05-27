@@ -569,22 +569,25 @@ function renderTop10UI(title, rawData) {
     document.getElementById("premium-features") ||
     document.querySelector(".premium-features");
 
+  // Advanced text-based lookup if exact ID/Class is missing in HTML
+  if (!premiumFeaturesNode) {
+    const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+    for (let el of headings) {
+      if (el.textContent && el.textContent.includes("Premium Features")) {
+        premiumFeaturesNode = el.closest("section") || el.parentNode;
+        break;
+      }
+    }
+  }
+
   if (premiumFeaturesNode && premiumFeaturesNode.parentNode) {
     premiumFeaturesNode.parentNode.insertBefore(
       leaderboardSection,
       premiumFeaturesNode,
     );
   } else {
-    // Fallback if premium features section is not found
-    let sgpaNode = document.getElementById("sgpa-section");
-    if (sgpaNode && sgpaNode.parentNode) {
-      sgpaNode.parentNode.insertBefore(
-        leaderboardSection,
-        sgpaNode.nextSibling,
-      );
-    } else {
-      document.body.appendChild(leaderboardSection);
-    }
+    // Fallback: Place at the bottom if Premium Features cannot be found
+    document.body.appendChild(leaderboardSection);
   }
 }
 
