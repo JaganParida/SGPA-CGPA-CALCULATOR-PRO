@@ -483,7 +483,7 @@ function buildTPRow(student, rank) {
     </tr>`;
 }
 
-/* Render the list strictly for top 100 with dynamic expand */
+/* Render the list strictly for top 50 numeric ranks with dynamic expand */
 function renderTop10UI(title, rawData) {
   // Clear old table if it exists
   const oldTable = document.getElementById("leaderboard-standalone-section");
@@ -500,31 +500,46 @@ function renderTop10UI(title, rawData) {
     return diff !== 0 ? diff : a.name.localeCompare(b.name);
   });
 
-  // Cut strictly to top 100
-  const top100 = sorted.slice(0, 100);
+  // --- DENSE RANKING LOGIC (Capped at Rank 50) ---
+  let topPerformers = [];
+  let currentRank = 1;
+  let previousScore = null;
 
-  // Store Global State for toggling
-  window.tpTotalCount = top100.length;
+  for (let i = 0; i < sorted.length; i++) {
+    const student = sorted[i];
+
+    if (previousScore !== null && student.score !== previousScore) {
+      currentRank++;
+    }
+
+    // Strict cutoff at Rank 50
+    if (currentRank > 50) break;
+
+    topPerformers.push({ ...student, displayRank: currentRank });
+    previousScore = student.score;
+  }
+
+  // Update Global State for toggling based on actual array length
+  window.tpTotalCount = topPerformers.length;
   window.tpVisibleStage = 1;
 
   let html1to10 = "";
   let html11to50 = "";
-  let html51to100 = "";
 
-  top100.forEach((student, i) => {
-    const rank = i + 1;
+  topPerformers.forEach((student) => {
+    const rank = student.displayRank;
     const rowHTML = buildTPRow(student, rank);
+
     if (rank <= 10) html1to10 += rowHTML;
-    else if (rank <= 50) html11to50 += rowHTML;
-    else html51to100 += rowHTML;
+    else html11to50 += rowHTML; // Collects ranks 11 to 50
   });
 
-  const hasExtra = top100.length > 10;
-  const extraCount = top100.length - 10;
+  const hasExtra = topPerformers.length > 10;
+  const extraCount = topPerformers.length - 10;
 
   const footerHTML = hasExtra
     ? `<div class="tp-footer"><button class="tp-toggle-btn" id="tp-toggle-btn" onclick="toggleTPExtra()">${SVG_USERS_TP}<span id="tp-btn-label">View rest ${extraCount}</span>${SVG_CHEVRON_TP}</button></div>`
-    : `<div class="tp-footer"><p class="tp-no-more">All ${top100.length} performers shown</p></div>`;
+    : `<div class="tp-footer"><p class="tp-no-more">All ${topPerformers.length} performers shown</p></div>`;
 
   let leaderboardSection = document.createElement("section");
   const semInput = document.getElementById("semester-number");
@@ -534,7 +549,7 @@ function renderTop10UI(title, rawData) {
   leaderboardSection.innerHTML = `
     <div class="tp-section-divider">
       <div class="tp-section-divider-line"></div>
-      <span class="tp-section-divider-label">Class Rankings</span>
+      <span class="tp-section-divider-label">Class Rankings (Top 50 Rankers)</span>
       <div class="tp-section-divider-line"></div>
     </div>
     <div class="tp-wrapper">
@@ -546,7 +561,7 @@ function renderTop10UI(title, rawData) {
             <p class="tp-subtitle">Ranked by Semester GPA &mdash; of Semester ${sem}</p>
           </div>
         </div>
-        <div class="tp-count-badge">${SVG_USERS_TP}&nbsp;<em>${top100.length}</em> ranked</div>
+        <div class="tp-count-badge">${SVG_USERS_TP}&nbsp;<em>${topPerformers.length}</em> ranked</div>
       </div>
       <div class="tp-table-wrap">
         <table class="tp-table">
@@ -566,7 +581,6 @@ function renderTop10UI(title, rawData) {
           </thead>
           <tbody id="tp-body-1">${html1to10}</tbody>
           <tbody class="tp-extra-rows" id="tp-body-2">${html11to50}</tbody>
-          <tbody class="tp-extra-rows" id="tp-body-3">${html51to100}</tbody>
         </table>
       </div>
       ${footerHTML}
@@ -578,7 +592,6 @@ function renderTop10UI(title, rawData) {
     document.getElementById("premium-features") ||
     document.querySelector(".premium-features");
 
-  // Advanced text-based lookup if exact ID/Class is missing in HTML
   if (!premiumFeaturesNode) {
     const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
     for (let el of headings) {
@@ -595,42 +608,28 @@ function renderTop10UI(title, rawData) {
       premiumFeaturesNode,
     );
   } else {
-    // Fallback: Place at the bottom if Premium Features cannot be found
     document.body.appendChild(leaderboardSection);
   }
 }
 
+/* Simplified 2-stage toggle logic for Top 50 */
 window.toggleTPExtra = function () {
   const b2 = document.getElementById("tp-body-2");
-  const b3 = document.getElementById("tp-body-3");
   const btn = document.getElementById("tp-toggle-btn");
   const label = document.getElementById("tp-btn-label");
   if (!btn) return;
 
-  const total = window.tpTotalCount || 100;
+  const total = window.tpTotalCount || 50;
 
   if (window.tpVisibleStage === 1) {
-    // Expand to 50
+    // Directly expand all remaining students up to Rank 50
     if (b2) b2.classList.add("visible");
     window.tpVisibleStage = 2;
-    let remain = total - 50;
-    if (remain > 0) {
-      label.textContent = `View rest ${remain}`;
-      btn.classList.remove("expanded");
-    } else {
-      label.textContent = "Show less";
-      btn.classList.add("expanded");
-    }
-  } else if (window.tpVisibleStage === 2 && total > 50) {
-    // Expand up to 100
-    if (b3) b3.classList.add("visible");
-    window.tpVisibleStage = 3;
     label.textContent = "Show less";
     btn.classList.add("expanded");
   } else {
-    // Collapse back to 10
+    // Collapse back to initial top 10 view
     if (b2) b2.classList.remove("visible");
-    if (b3) b3.classList.remove("visible");
     window.tpVisibleStage = 1;
     label.textContent = `View rest ${total - 10}`;
     btn.classList.remove("expanded");
