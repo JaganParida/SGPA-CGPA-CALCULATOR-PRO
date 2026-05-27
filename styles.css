@@ -2068,3 +2068,8 @@ select option {
     font-size: 12.5px;
   }
 }
+
+/* Target Row Highlight Animation */
+.tp-row-target-highlight {
+  animation: targetPulse 10s ease-out; /* 10 seconds tak animation chalegi */
+}

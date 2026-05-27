@@ -174,6 +174,10 @@ function resetUI() {
 
   const oldTable = document.getElementById("leaderboard-standalone-section");
   if (oldTable) oldTable.remove();
+
+  // Clean up floating button if exists
+  const oldBtn = document.getElementById("tp-jump-btn");
+  if (oldBtn) oldBtn.remove();
 }
 window.addEventListener("load", resetUI);
 
@@ -324,6 +328,51 @@ const EXCLUDED_STUDENT_REG = "230301120504";
       100% { background-color: rgba(168, 85, 247, 0.05); }
     }
 
+    /* Target Row Highlight Animation */
+    .tp-row-target-highlight {
+      animation: targetPulse 2.5s ease-out;
+    }
+    @keyframes targetPulse {
+      0% { background-color: rgba(59, 130, 246, 0.6); box-shadow: inset 0 0 15px rgba(59, 130, 246, 0.8); }
+      100% { background-color: transparent; box-shadow: none; }
+    }
+
+    /* Floating Jump Button UI */
+    .tp-floating-btn {
+      position: fixed;
+      bottom: 40px;
+      right: 30px;
+      background: linear-gradient(135deg, #2563eb, #8b5cf6);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 14px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+      animation: bounceInUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards, floatBtn 3s ease-in-out infinite alternate;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .tp-floating-btn:hover {
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.7);
+      background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+    }
+    @keyframes bounceInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatBtn {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-8px); }
+    }
+
     .tp-master-container, .tp-master-container * {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     }
@@ -359,7 +408,7 @@ const EXCLUDED_STUDENT_REG = "230301120504";
     }
     
     /* Guaranteed straight lines */
-    table.tp-table th, table.tp-table td { vertical-align: middle; padding: 14px 10px; }
+    table.tp-table th, table.tp-table td { vertical-align: middle; padding: 14px 10px; transition: background-color 0.3s; }
     table.tp-table th.th-rank, table.tp-table td.tp-td-rank { text-align: center; }
     table.tp-table th.th-name, table.tp-table td.tp-td-name { text-align: left; }
     table.tp-table th.th-reg, table.tp-table td.tp-td-reg { text-align: center; }
@@ -474,8 +523,9 @@ function buildTPRow(student, rank) {
 
   const displayName = `${student.name}${isDev ? ' <span class="dev-badge">DEVELOPER</span>' : ""}`;
 
+  // ID added for auto-scroll target
   return `
-    <tr class="${rowClass}">
+    <tr id="tp-row-${student.regNo}" class="${rowClass}">
       <td class="tp-td-rank">${rankContent}</td>
       <td class="tp-td-name"><span class="tp-name ${nameClass}">${displayName}</span></td>
       <td class="tp-td-reg"><span class="tp-reg">${student.regNo}</span></td>
@@ -488,6 +538,10 @@ function renderTop10UI(title, rawData) {
   // Clear old table if it exists
   const oldTable = document.getElementById("leaderboard-standalone-section");
   if (oldTable) oldTable.remove();
+
+  // Clear old floating button if it exists
+  const oldJumpBtn = document.getElementById("tp-jump-btn");
+  if (oldJumpBtn) oldJumpBtn.remove();
 
   /* Only run logic if Report is actually generated */
   if (!isReportGenerated) return;
@@ -549,7 +603,7 @@ function renderTop10UI(title, rawData) {
   leaderboardSection.innerHTML = `
     <div class="tp-section-divider">
       <div class="tp-section-divider-line"></div>
-      <span class="tp-section-divider-label">Class Rankings (Top 50 Rankers)</span>
+      <span class="tp-section-divider-label">Class Rankings</span>
       <div class="tp-section-divider-line"></div>
     </div>
     <div class="tp-wrapper">
@@ -609,6 +663,58 @@ function renderTop10UI(title, rawData) {
     );
   } else {
     document.body.appendChild(leaderboardSection);
+  }
+
+  // --- FLOATING JUMP BUTTON LOGIC ---
+  if (currentReportData) {
+    const userRankObj = topPerformers.find(
+      (s) => s.regNo === currentReportData.regNo,
+    );
+
+    if (userRankObj) {
+      const jumpBtn = document.createElement("button");
+      jumpBtn.id = "tp-jump-btn";
+      jumpBtn.className = "tp-floating-btn";
+      jumpBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 4V20M18 14L12 20L6 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Scroll down to see your rank`;
+
+      jumpBtn.onclick = () => {
+        // If user is in the extra hidden section and it's currently collapsed, expand it
+        if (userRankObj.displayRank > 10 && window.tpVisibleStage === 1) {
+          window.toggleTPExtra();
+        }
+
+        // Wait briefly for UI to expand if needed, then scroll
+        setTimeout(
+          () => {
+            const targetRow = document.getElementById(
+              `tp-row-${userRankObj.regNo}`,
+            );
+            if (targetRow) {
+              targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+
+              // Re-trigger animation
+              targetRow.classList.remove("tp-row-target-highlight");
+              void targetRow.offsetWidth; // Force DOM reflow
+              targetRow.classList.add("tp-row-target-highlight");
+
+              // Remove highlight after animation finishes
+              setTimeout(() => {
+                targetRow.classList.remove("tp-row-target-highlight");
+              }, 10000);
+
+              // Fade out and remove floating button gracefully
+              jumpBtn.style.opacity = "0";
+              jumpBtn.style.transform = "translateY(20px)";
+              jumpBtn.style.pointerEvents = "none";
+              setTimeout(() => jumpBtn.remove(), 400);
+            }
+          },
+          window.tpVisibleStage === 1 ? 50 : 200,
+        );
+      };
+
+      document.body.appendChild(jumpBtn);
+    }
   }
 }
 
