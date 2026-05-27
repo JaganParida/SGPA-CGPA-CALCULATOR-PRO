@@ -541,7 +541,7 @@ function renderTop10UI(title, rawData) {
           <div class="tp-icon-wrap">${SVG_TROPHY_TP}</div>
           <div>
             <p class="tp-title">Top Performers</p>
-            <p class="tp-subtitle">Ranked by Semester GPA &mdash; Academic Year 2025&ndash;26</p>
+            <p class="tp-subtitle">Ranked by Semester GPA &mdash; Academic Year 2026&ndash;27</p>
           </div>
         </div>
         <div class="tp-count-badge">${SVG_USERS_TP}&nbsp;<em>${top100.length}</em> ranked</div>
