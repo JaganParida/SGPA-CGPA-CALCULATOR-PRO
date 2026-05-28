@@ -619,7 +619,7 @@ function renderTop10UI(title, rawData) {
   leaderboardSection.innerHTML = `
     <div class="tp-section-divider">
       <div class="tp-section-divider-line"></div>
-      <span class="tp-section-divider-label">Class Rankings</span>
+      <span class="tp-section-divider-label">Class Rankings(Top 50 Rank)</span>
       <div class="tp-section-divider-line"></div>
     </div>
     <div class="tp-wrapper">
