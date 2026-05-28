@@ -328,51 +328,78 @@ const EXCLUDED_STUDENT_REG = "230301120504";
       100% { background-color: rgba(168, 85, 247, 0.05); }
     }
 
-    /* Target Row Highlight Animation */
-    .tp-row-target-highlight {
-      animation: targetPulse 2.5s ease-out;
-    }
-    @keyframes targetPulse {
-      0% { background-color: rgba(59, 130, 246, 0.6); box-shadow: inset 0 0 15px rgba(59, 130, 246, 0.8); }
-      100% { background-color: transparent; box-shadow: none; }
-    }
-
-    /* Floating Jump Button UI */
+    /* --- JS INJECTED CSS FOR PROFESSIONAL FLOATING BUTTON --- */
     .tp-floating-btn {
       position: fixed;
-      bottom: 40px;
+      bottom: 30px;
       right: 30px;
-      background: linear-gradient(135deg, #2563eb, #8b5cf6);
+      background: #0f172a; /* Clean Dark Slate */
       color: #ffffff;
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 14px 24px;
+      border: 1px solid rgba(59, 130, 246, 0.3); /* Subtle blue border */
+      padding: 12px 24px;
       border-radius: 50px;
       font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
       cursor: pointer;
       z-index: 9999;
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
-      animation: bounceInUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards, floatBtn 3s ease-in-out infinite alternate;
+      box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
       opacity: 0;
-      transform: translateY(50px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateY(20px);
+      animation: popInBtn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+    
     .tp-floating-btn:hover {
-      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.7);
-      background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+      background: #1e293b;
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 25px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      border-color: rgba(59, 130, 246, 0.6);
     }
-    @keyframes bounceInUp {
+    
+    @keyframes popInBtn {
       to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes floatBtn {
-      0% { transform: translateY(0px); }
-      100% { transform: translateY(-8px); }
+
+    /* Mobile Responsive - Centered perfectly at bottom */
+    @media (max-width: 768px) {
+      .tp-floating-btn {
+        bottom: 25px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        width: max-content;
+        padding: 12px 20px;
+        font-size: 13px;
+      }
+      @keyframes popInBtnMobile {
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+      }
+      .tp-floating-btn {
+        animation: popInBtnMobile 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .tp-floating-btn:hover {
+        transform: translateX(-50%) translateY(-2px);
+      }
     }
 
+    /* Target Row Highlight Animation (10 seconds exactly) */
+    .tp-row-target-highlight {
+      animation: targetPulse 10s ease-out forwards;
+    }
+    
+    @keyframes targetPulse {
+      0% { background-color: rgba(59, 130, 246, 0.4); }
+      10% { background-color: rgba(59, 130, 246, 0.2); }
+      85% { background-color: rgba(59, 130, 246, 0.1); }
+      100% { background-color: transparent; }
+    }
+
+    /* Rest of the table styles */
     .tp-master-container, .tp-master-container * {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     }
@@ -392,22 +419,20 @@ const EXCLUDED_STUDENT_REG = "230301120504";
     .tp-subtitle { font-size: 12px; color: #71717a; margin: 4px 0 0; }
     .tp-count-badge { background: #111114; border: 1px solid #27272a; border-radius: 20px; padding: 4px 22px; font-size: 12px; color: #71717a; font-weight: 600; }
 
-    /* Strict Alignment Fixes - Mobile Responsive */
     .tp-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table.tp-table { width: 100%; min-width: 550px; border-collapse: collapse; table-layout: fixed; }
-    table.tp-table colgroup col:nth-child(1) { width: 80px; }  /* Rank */
-    table.tp-table colgroup col:nth-child(2) { width: auto; }  /* Name */
-    table.tp-table colgroup col:nth-child(3) { width: 140px; } /* Reg No */
-    table.tp-table colgroup col:nth-child(4) { width: 100px; } /* SGPA */
+    table.tp-table colgroup col:nth-child(1) { width: 80px; } 
+    table.tp-table colgroup col:nth-child(2) { width: auto; }  
+    table.tp-table colgroup col:nth-child(3) { width: 140px; } 
+    table.tp-table colgroup col:nth-child(4) { width: 100px; } 
 
     table.tp-table thead th {
       padding: 12px 14px; font-size: 11px; font-weight: 700;
       letter-spacing: 0.9px; text-transform: uppercase; color: #52525b;
       border-bottom: 1px solid #1c1c20; background: #0e0e11;
-      white-space: nowrap; /* Fixes overlapping/stacking headers on mobile */
+      white-space: nowrap; 
     }
     
-    /* Guaranteed straight lines */
     table.tp-table th, table.tp-table td { vertical-align: middle; padding: 14px 10px; transition: background-color 0.3s; }
     table.tp-table th.th-rank, table.tp-table td.tp-td-rank { text-align: center; }
     table.tp-table th.th-name, table.tp-table td.tp-td-name { text-align: left; }
@@ -426,13 +451,11 @@ const EXCLUDED_STUDENT_REG = "230301120504";
     .tp-rank-bronze { background:rgba(180,83,9,0.07); border:1px solid rgba(180,83,9,0.2); }
     .tp-rank-placeholder { width: 28px; display: inline-block; }
 
-    /* Rows */
     .tp-row-gold { background: linear-gradient(90deg, rgba(20,16,4,0.85) 0%, rgba(12,12,14,0.85) 60%); border-bottom: 1px solid rgba(234,179,8,0.08); position: relative; }
     .tp-row-silver { background:rgba(12,12,14,0.8); border-bottom:1px solid rgba(161,161,170,0.06); position:relative; }
     .tp-row-bronze { background:rgba(12,12,14,0.8); border-bottom:1px solid rgba(180,83,9,0.07); position:relative; }
     .tp-row-normal { border-bottom: 1px solid #111114; }
     
-    /* Developer Row Styles */
     .tp-row-dev {
       animation: devHighlight 2s infinite ease-in-out !important;
       border-top: 1px solid rgba(168, 85, 247, 0.3) !important;
@@ -452,7 +475,6 @@ const EXCLUDED_STUDENT_REG = "230301120504";
     .tp-name-silver { color:#e4e4e7; font-weight: 700; }
     .tp-name-bronze { color:#fed7aa; font-weight: 700; }
     .tp-reg { font-size:12px; color:#71717a; font-weight: 500;}
-
     .tp-score { font-size:14px; font-weight:700; }
     .tp-score-gold { color:#eab308; }
     .tp-score-silver { color:#a1a1aa; }
@@ -523,7 +545,6 @@ function buildTPRow(student, rank) {
 
   const displayName = `${student.name}${isDev ? ' <span class="dev-badge">DEVELOPER</span>' : ""}`;
 
-  // ID added for auto-scroll target
   return `
     <tr id="tp-row-${student.regNo}" class="${rowClass}">
       <td class="tp-td-rank">${rankContent}</td>
@@ -535,15 +556,12 @@ function buildTPRow(student, rank) {
 
 /* Render the list strictly for top 50 numeric ranks with dynamic expand */
 function renderTop10UI(title, rawData) {
-  // Clear old table if it exists
   const oldTable = document.getElementById("leaderboard-standalone-section");
   if (oldTable) oldTable.remove();
 
-  // Clear old floating button if it exists
   const oldJumpBtn = document.getElementById("tp-jump-btn");
   if (oldJumpBtn) oldJumpBtn.remove();
 
-  /* Only run logic if Report is actually generated */
   if (!isReportGenerated) return;
 
   let filteredData = [...rawData].filter(
@@ -566,14 +584,12 @@ function renderTop10UI(title, rawData) {
       currentRank++;
     }
 
-    // Strict cutoff at Rank 50
     if (currentRank > 50) break;
 
     topPerformers.push({ ...student, displayRank: currentRank });
     previousScore = student.score;
   }
 
-  // Update Global State for toggling based on actual array length
   window.tpTotalCount = topPerformers.length;
   window.tpVisibleStage = 1;
 
@@ -585,7 +601,7 @@ function renderTop10UI(title, rawData) {
     const rowHTML = buildTPRow(student, rank);
 
     if (rank <= 10) html1to10 += rowHTML;
-    else html11to50 += rowHTML; // Collects ranks 11 to 50
+    else html11to50 += rowHTML;
   });
 
   const hasExtra = topPerformers.length > 10;
@@ -603,7 +619,7 @@ function renderTop10UI(title, rawData) {
   leaderboardSection.innerHTML = `
     <div class="tp-section-divider">
       <div class="tp-section-divider-line"></div>
-      <span class="tp-section-divider-label">Class Rankings (Top 50 Rank)</span>
+      <span class="tp-section-divider-label">Class Rankings</span>
       <div class="tp-section-divider-line"></div>
     </div>
     <div class="tp-wrapper">
@@ -641,7 +657,6 @@ function renderTop10UI(title, rawData) {
     </div>
   `;
 
-  // Explicitly Place strictly above Premium Features Section
   let premiumFeaturesNode =
     document.getElementById("premium-features") ||
     document.querySelector(".premium-features");
@@ -665,7 +680,7 @@ function renderTop10UI(title, rawData) {
     document.body.appendChild(leaderboardSection);
   }
 
-  // --- FLOATING JUMP BUTTON LOGIC ---
+  // --- PROFESSIONAL FLOATING JUMP BUTTON LOGIC ---
   if (currentReportData) {
     const userRankObj = topPerformers.find(
       (s) => s.regNo === currentReportData.regNo,
@@ -675,15 +690,16 @@ function renderTop10UI(title, rawData) {
       const jumpBtn = document.createElement("button");
       jumpBtn.id = "tp-jump-btn";
       jumpBtn.className = "tp-floating-btn";
-      jumpBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 4V20M18 14L12 20L6 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Scroll down to see your rank`;
+      // Adding a clean, sleek SVG icon alongside the text
+      jumpBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 4V20M18 14L12 20L6 14" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> <span>See your rank #${userRankObj.displayRank}</span>`;
 
       jumpBtn.onclick = () => {
-        // If user is in the extra hidden section and it's currently collapsed, expand it
+        // Expand the list if the user's rank is hidden
         if (userRankObj.displayRank > 10 && window.tpVisibleStage === 1) {
           window.toggleTPExtra();
         }
 
-        // Wait briefly for UI to expand if needed, then scroll
+        // Wait a tiny bit for the UI to expand if it was collapsed, then jump
         setTimeout(
           () => {
             const targetRow = document.getElementById(
@@ -692,24 +708,23 @@ function renderTop10UI(title, rawData) {
             if (targetRow) {
               targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
 
-              // Re-trigger animation
+              // Reset and trigger the 10-second CSS animation
               targetRow.classList.remove("tp-row-target-highlight");
-              void targetRow.offsetWidth; // Force DOM reflow
+              void targetRow.offsetWidth; // Force a DOM reflow
               targetRow.classList.add("tp-row-target-highlight");
 
-              // Remove highlight after animation finishes
+              // Remove the class strictly after exactly 10 seconds
               setTimeout(() => {
                 targetRow.classList.remove("tp-row-target-highlight");
               }, 10000);
 
-              // Fade out and remove floating button gracefully
+              // Fade out the floating button cleanly
               jumpBtn.style.opacity = "0";
-              jumpBtn.style.transform = "translateY(20px)";
               jumpBtn.style.pointerEvents = "none";
               setTimeout(() => jumpBtn.remove(), 400);
             }
           },
-          window.tpVisibleStage === 1 ? 50 : 200,
+          window.tpVisibleStage === 1 ? 50 : 250,
         );
       };
 
@@ -728,13 +743,11 @@ window.toggleTPExtra = function () {
   const total = window.tpTotalCount || 50;
 
   if (window.tpVisibleStage === 1) {
-    // Directly expand all remaining students up to Rank 50
     if (b2) b2.classList.add("visible");
     window.tpVisibleStage = 2;
     label.textContent = "Show less";
     btn.classList.add("expanded");
   } else {
-    // Collapse back to initial top 10 view
     if (b2) b2.classList.remove("visible");
     window.tpVisibleStage = 1;
     label.textContent = `View rest ${total - 10}`;
@@ -795,7 +808,6 @@ document.getElementById("excel-file").addEventListener("change", function (e) {
           });
           workbookData = workbookData.concat(formatted);
         });
-        /* Do NOT call generateTop10SGPAList() here. Only call it when report is generated */
       } catch (error) {
         customAlert(
           "Failed to read the Excel file. Please ensure it's a valid .xlsx file.",
@@ -954,7 +966,6 @@ document.getElementById("calculate-btn").addEventListener("click", function () {
     '<i class="ri-verified-badge-fill" style="color: #3b82f6;"></i> Report Generated';
   calcBtn.style.cursor = "not-allowed";
 
-  // Triggers Top Performers render
   isReportGenerated = true;
 
   if (GOOGLE_SCRIPT_URL) {
