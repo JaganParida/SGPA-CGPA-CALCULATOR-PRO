@@ -30,6 +30,173 @@
   </head>
 
   <body>
+    <!-- NEW WEBSITE REDIRECT POPUP (UNCLOSEABLE) -->
+    <!-- NEW WEBSITE REDIRECT POPUP (RESPONSIVE) -->
+    <div class="redirect-overlay">
+      <div class="redirect-card">
+        <!-- Glowing Icon -->
+        <div class="redirect-icon-box">
+          <i class="ri-rocket-2-fill redirect-icon"></i>
+        </div>
+
+        <h2 class="redirect-title">GradeFlow Has Evolved!</h2>
+
+        <p class="redirect-desc">
+          Welcome to the future. We have officially migrated to a brand new,
+          highly advanced platform with premium analytics, predictive
+          algorithms, and a stunning new interface.
+        </p>
+
+        <!-- Raw Link Display -->
+        <div class="redirect-link-box">
+          <p class="redirect-link-label">Visit our new home</p>
+
+          <a href="https://grade-flow-navy.vercel.app/" class="redirect-url">
+            https://grade-flow-navy.vercel.app/
+          </a>
+        </div>
+      </div>
+
+      <style>
+        .redirect-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          z-index: 2147483647;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+          box-sizing: border-box;
+        }
+        .redirect-card {
+          background: rgba(20, 20, 20, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow:
+            0 30px 60px rgba(0, 0, 0, 0.9),
+            inset 0 1px 1px rgba(255, 255, 255, 0.1);
+          border-radius: 28px;
+          padding: 48px 32px;
+          max-width: 500px;
+          width: 100%;
+          text-align: center;
+          animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .redirect-icon-box {
+          width: 88px;
+          height: 88px;
+          background: linear-gradient(135deg, #3ea6ff, #a855f7);
+          border-radius: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 28px;
+          box-shadow: 0 12px 35px rgba(168, 85, 247, 0.4);
+        }
+        .redirect-icon {
+          font-size: 44px;
+          color: #fff;
+        }
+        .redirect-title {
+          font-size: 32px;
+          font-family: "DM Sans", sans-serif;
+          font-weight: 800;
+          color: #fff;
+          margin-bottom: 16px;
+          letter-spacing: -0.5px;
+        }
+        .redirect-desc {
+          font-size: 16px;
+          color: #a0a0a0;
+          line-height: 1.6;
+          font-family: "DM Sans", sans-serif;
+          margin-bottom: 36px;
+        }
+        .redirect-link-box {
+          background: rgba(0, 0, 0, 0.5);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          padding: 24px 16px;
+          text-align: center;
+        }
+        .redirect-link-label {
+          font-size: 12px;
+          color: #888;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          margin-bottom: 12px;
+          font-weight: 700;
+          font-family: "DM Sans", sans-serif;
+        }
+        .redirect-url {
+          display: block;
+          font-size: 18px;
+          color: #3ea6ff;
+          font-family: "DM Mono", monospace;
+          font-weight: 600;
+          text-decoration: none;
+          word-break: break-all;
+        }
+
+        @keyframes popIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.8) translateY(30px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        body {
+          height: 100vh !important;
+          overflow: hidden !important;
+        }
+
+        /* 🔥 MOBILE RESPONSIVE FIXES 🔥 */
+        @media (max-width: 480px) {
+          .redirect-card {
+            padding: 36px 20px;
+            border-radius: 24px;
+          }
+          .redirect-icon-box {
+            width: 72px;
+            height: 72px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+          }
+          .redirect-icon {
+            font-size: 36px;
+          }
+          .redirect-title {
+            font-size: 26px;
+            margin-bottom: 12px;
+          }
+          .redirect-desc {
+            font-size: 14px;
+            margin-bottom: 28px;
+          }
+          .redirect-link-box {
+            padding: 20px 10px;
+          }
+
+          /* The secret to making the URL fit perfectly is responsive clamp() */
+          .redirect-url {
+            font-size: clamp(14px, 4.5vw, 18px);
+            letter-spacing: -0.5px;
+          }
+        }
+      </style>
+    </div>
+    <!-- END NEW WEBSITE REDIRECT POPUP -->
+    <!-- END NEW WEBSITE REDIRECT POPUP -->
+
     <nav class="navbar" id="main-navbar">
       <div class="nav-content">
         <div class="logo-group">
