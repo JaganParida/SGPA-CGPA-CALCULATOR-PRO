@@ -30,11 +30,16 @@
   </head>
 
   <body>
-    <!-- NEW WEBSITE REDIRECT POPUP (UNCLOSEABLE) -->
-    <!-- NEW WEBSITE REDIRECT POPUP (RESPONSIVE) -->
-    <div class="redirect-overlay">
+    <div class="redirect-overlay" id="redirect-overlay">
       <div class="redirect-card">
-        <!-- Glowing Icon -->
+        <button
+          class="redirect-close-btn"
+          onclick="closeRedirectPopup()"
+          aria-label="Close"
+        >
+          <i class="ri-close-line"></i>
+        </button>
+
         <div class="redirect-icon-box">
           <i class="ri-rocket-2-fill redirect-icon"></i>
         </div>
@@ -47,7 +52,6 @@
           algorithms, and a stunning new interface.
         </p>
 
-        <!-- Raw Link Display -->
         <div class="redirect-link-box">
           <p class="redirect-link-label">Visit our new home</p>
 
@@ -75,6 +79,7 @@
           box-sizing: border-box;
         }
         .redirect-card {
+          position: relative; /* Added to position close button */
           background: rgba(20, 20, 20, 0.8);
           border: 1px solid rgba(255, 255, 255, 0.08);
           box-shadow:
@@ -87,6 +92,33 @@
           text-align: center;
           animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
+        /* New Close Button Styles */
+        .redirect-close-btn {
+          position: absolute;
+          top: 18px;
+          right: 18px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #a0a0a0;
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+          z-index: 10;
+        }
+        .redirect-close-btn:hover {
+          background: rgba(239, 68, 68, 0.15); /* Soft red on hover */
+          color: #ef4444;
+          border-color: rgba(239, 68, 68, 0.3);
+          transform: scale(1.05);
+        }
+
         .redirect-icon-box {
           width: 88px;
           height: 88px;
@@ -154,16 +186,18 @@
           }
         }
 
-        body {
-          height: 100vh !important;
-          overflow: hidden !important;
-        }
-
         /* 🔥 MOBILE RESPONSIVE FIXES 🔥 */
         @media (max-width: 480px) {
           .redirect-card {
             padding: 36px 20px;
             border-radius: 24px;
+          }
+          .redirect-close-btn {
+            top: 14px;
+            right: 14px;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
           }
           .redirect-icon-box {
             width: 72px;
@@ -193,10 +227,28 @@
           }
         }
       </style>
-    </div>
-    <!-- END NEW WEBSITE REDIRECT POPUP -->
-    <!-- END NEW WEBSITE REDIRECT POPUP -->
 
+      <script>
+        // Lock scroll on the main body when the popup is active
+        document.body.style.setProperty("overflow", "hidden", "important");
+        document.body.style.setProperty("height", "100vh", "important");
+
+        // Close logic and restore background scroll
+        function closeRedirectPopup() {
+          const overlay = document.getElementById("redirect-overlay");
+          overlay.style.transition = "opacity 0.3s ease, visibility 0.3s ease";
+          overlay.style.opacity = "0";
+          overlay.style.visibility = "hidden";
+
+          setTimeout(() => {
+            overlay.style.display = "none";
+            // Restore body scroll completely
+            document.body.style.overflow = "";
+            document.body.style.height = "";
+          }, 300);
+        }
+      </script>
+    </div>
     <nav class="navbar" id="main-navbar">
       <div class="nav-content">
         <div class="logo-group">
@@ -653,7 +705,6 @@
         style="display: flex; justify-content: center; width: 100%"
       ></div>
 
-      <!-- BENTO GRID FEATURES -->
       <section id="features" class="info-section">
         <div class="section-header text-center">
           <h2 class="gradient-text">Premium Features</h2>
@@ -715,7 +766,6 @@
         </div>
       </section>
 
-      <!-- HOW-TO TIMELINE -->
       <section id="how-to" class="info-section">
         <div class="section-header text-center">
           <h2 class="gradient-text">How to Use GradeFlow</h2>
@@ -800,7 +850,6 @@
       <p class="copyright footer-copy">&copy; 2026 Academic Tools Suite.</p>
     </footer>
 
-    <!-- Internal Result Modal -->
     <div
       id="internal-result-modal"
       style="
@@ -852,7 +901,6 @@
       </div>
     </div>
 
-    <!-- Custom Confirm Modal -->
     <div
       id="custom-confirm-modal"
       class="modal-overlay"
@@ -917,7 +965,6 @@
       </div>
     </div>
 
-    <!-- Formula Modal -->
     <div id="formula-modal" class="modal-overlay">
       <div class="modal-content material-card popup-glass">
         <button class="close-modal" onclick="closeModal()">
@@ -947,7 +994,6 @@
       </div>
     </div>
 
-    <!-- Excel Drive Modal -->
     <div id="excel-modal" class="modal-overlay">
       <div class="modal-content material-card popup-glass text-center">
         <button class="close-modal" onclick="closeExcelModal()">
@@ -969,7 +1015,6 @@
       </div>
     </div>
 
-    <!-- Custom Alert Modal -->
     <div id="custom-alert" class="modal-overlay">
       <div class="modal-content material-card popup-glass text-center">
         <div class="popup-icon-alert" style="color: #ef4444">
@@ -987,7 +1032,6 @@
       </div>
     </div>
 
-    <!-- Custom Prompt Modal -->
     <div id="custom-prompt" class="modal-overlay">
       <div class="modal-content material-card popup-glass">
         <button class="close-modal" onclick="closeCustomPrompt()">
